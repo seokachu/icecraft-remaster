@@ -1,6 +1,6 @@
 import { Namespace, Socket } from "socket.io";
 import { DefaultEventsMap } from "socket.io/dist/typed-events";
-import { getRoomInfo, setRoomIsPlaying } from "src/api/supabase/roomAPI";
+import { getRoomInfo, setRoomIsPlaying } from "../api/supabase/roomAPI";
 import {
   gameOver,
   getMostVotedPlayer,
@@ -8,14 +8,14 @@ import {
   getYesOrNoVoteResult,
   playError,
   shufflePlayers,
-} from "src/api/socket/moderatorAPI";
+} from "../api/socket/moderatorAPI";
 import {
   AllPlayer,
   Media,
   RoundStatus,
   VoteBoard,
   YesOrNoVoteResult,
-} from "types";
+} from "../../types";
 import {
   getPlayersInRoom,
   getSelectedPlayer,
@@ -26,7 +26,7 @@ import {
   resetVote,
   savePlayer,
   setPlayerRole,
-} from "src/api/supabase/gamePlayAPI";
+} from "../api/supabase/gamePlayAPI";
 export const onGameStart = async (
   socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>,
   mafiaIo: Namespace<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>

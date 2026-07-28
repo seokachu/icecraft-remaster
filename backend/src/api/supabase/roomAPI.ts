@@ -1,4 +1,4 @@
-import { supabase } from "src/api/supabase/client";
+import { supabase } from "./client";
 
 export const getRooms = async () => {
   const { data, error } = await supabase

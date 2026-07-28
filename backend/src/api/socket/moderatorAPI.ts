@@ -6,19 +6,19 @@ import {
   RoundStatus,
   VoteBoard,
   YesOrNoVoteResult,
-} from "types/index";
+} from "../../../types/index";
 import {
   checkAllPlayersReady,
   checkPlayerCountEnough,
   getVoteYesOrNoResult,
   initGame,
-} from "src/api/supabase/gamePlayAPI";
+} from "../supabase/gamePlayAPI";
 import {
   getChief,
   getRoomInfo,
   getUserCountInRoom,
   setRoomIsPlaying,
-} from "src/api/supabase/roomAPI";
+} from "../supabase/roomAPI";
 
 export const canGameStart = async (
   roomId: string,

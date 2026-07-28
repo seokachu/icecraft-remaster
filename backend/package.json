@@ -1,31 +1,28 @@
 {
-  "name": "ice-craft",
+  "name": "icecraft-backend",
   "version": "1.0.0",
-  "description": "ice-craft 서버",
-  "main": "app.ts",
+  "description": "IceCraft 게임 서버",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon --watch \"*.ts\" --exec \"ts-node\" src/app.ts",
-    "start-cluster": "pm2 start --only ice-craft-cluster",
-    "start-fork": "pm2 start --only ice-craft-fork",
-    "monitor": "pm2 monit",
-    "stop": "pm2 kill"
+    "dev": "nodemon --watch src --ext ts --exec ts-node src/app.ts",
+    "build": "tsc",
+    "start": "node dist/src/app.js"
   },
-  "author": "KMH",
   "license": "MIT",
   "dependencies": {
     "@supabase/supabase-js": "^2.44.4",
-    "@types/express": "^4.17.21",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
-    "socket.io": "^4.7.5",
-    "supabase": "^1.183.5",
-    "typescript": "^5.5.3"
+    "socket.io": "^4.7.5"
   },
   "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.14.0",
     "nodemon": "^3.1.4",
-    "pm2": "^5.4.2",
+    "supabase": "^1.183.5",
     "ts-node": "^10.9.2",
-    "tsconfig-paths": "^4.2.0"
+    "typescript": "^5.5.3"
+  },
+  "engines": {
+    "node": ">=20"
   }
 }

@@ -1,6 +1,6 @@
 import { Socket } from "socket.io";
 import { DefaultEventsMap } from "socket.io/dist/typed-events";
-import { voteYesOrNo } from "src/api/supabase/gamePlayAPI";
+import { voteYesOrNo } from "../api/supabase/gamePlayAPI";
 
 export const onVoteYesOrNo = async (
   socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>
@@ -13,7 +13,7 @@ export const onVoteYesOrNo = async (
       await voteYesOrNo(userId, yesOrNo);
     } catch (error) {
       console.log(`[voteYesOrNoError] ${(error as Error).message}`);
-      socket.emit("[voteYesOrNoError]", (error as Error).message);
+      socket.emit("voteYesOrNoError", (error as Error).message);
     }
   });
 };

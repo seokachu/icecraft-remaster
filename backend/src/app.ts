@@ -1,29 +1,30 @@
+import "dotenv/config";
 import express from "express";
 import { createServer } from "http";
 import { Server } from "socket.io";
-import { onEnterMafia } from "src/services/onEnterMafia";
-import { onCreateRoom } from "src/services/onCreateRoom";
-import { onJoinRoom } from "src/services/onJoinRoom";
-import { onFastJoinRoom } from "src/services/onFastJoinRoom";
-import { onExitRoom } from "src/services/onExitRoom";
-import { onSetReady } from "src/services/onSetReady";
-import { onUserInfo } from "src/services/onUserInfo";
-import { onDisconnect } from "src/services/onDisconnect";
-import { onGameStart } from "src/services/onGameStart";
-import { onVoteTo } from "src/services/onVoteTo";
-import { onVoteYesOrNo } from "src/services/onVoteYesOrNo";
-import { onSelectPlayer } from "src/services/onSelectPlayer";
-import { onUpdateRoomInfo } from "src/services/onUpdateRoomInfo";
+import { onEnterMafia } from "./services/onEnterMafia";
+import { onCreateRoom } from "./services/onCreateRoom";
+import { onJoinRoom } from "./services/onJoinRoom";
+import { onFastJoinRoom } from "./services/onFastJoinRoom";
+import { onExitRoom } from "./services/onExitRoom";
+import { onSetReady } from "./services/onSetReady";
+import { onUserInfo } from "./services/onUserInfo";
+import { onDisconnect } from "./services/onDisconnect";
+import { onGameStart } from "./services/onGameStart";
+import { onVoteTo } from "./services/onVoteTo";
+import { onVoteYesOrNo } from "./services/onVoteYesOrNo";
+import { onSelectPlayer } from "./services/onSelectPlayer";
+import { onUpdateRoomInfo } from "./services/onUpdateRoomInfo";
 
 const app = express();
-const httpsServer = createServer(app);
-const port = 443;
-const originURL = process.env.VERCEL_URL
-  ? process.env.VERCEL_URL
-  : process.env.DEV_URL;
-const io = new Server(httpsServer, {
+const server = createServer(app);
+const port = Number(process.env.PORT) || 4000;
+const allowedOrigins = (process.env.ALLOWED_ORIGINS ?? "http://localhost:3000")
+  .split(",")
+  .map((origin) => origin.trim());
+const io = new Server(server, {
   cors: {
-    origin: originURL,
+    origin: allowedOrigins,
   },
 });
 const mafiaIo = io.of("/mafia");
@@ -60,8 +61,8 @@ mafiaIo.on("connection", (socket) => {
   onSelectPlayer(socket);
 });
 
-httpsServer.keepAliveTimeout = 200_000;
+server.keepAliveTimeout = 200_000;
 
-httpsServer.listen(port, () => {
+server.listen(port, () => {
   console.log(`port(${port})으로 실행 중`);
 });

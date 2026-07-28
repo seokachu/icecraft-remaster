@@ -1,5 +1,5 @@
-import { VoteBoard } from "types/index";
-import { supabase } from "src/api/supabase/client";
+import { VoteBoard } from "../../../types/index";
+import { supabase } from "./client";
 
 export const checkPlayerCountEnough = async (
   room_id: string,
