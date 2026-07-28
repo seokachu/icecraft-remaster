@@ -6,28 +6,17 @@ import usePlayerNumber from "@/hooks/usePlayerNumber";
 import { useChiefPlayer, useDiedPlayer, useGameState } from "@/store/game-store";
 import { useActivePlayer, useIsLocalOverlay, useReadyPlayers } from "@/store/overlay-store";
 import S from "@/style/livekit/livekit.module.css";
-import { ParticipantTile, TrackLoop, useLocalParticipant, useTracks } from "@livekit/components-react";
 import Image from "next/image";
 import GameStartButton from "@/components/mafia/GameStartButton";
+import PeerVideo from "@/components/mafia/PeerVideo";
+import { useMediaRoom } from "@/components/mafia/MediaRoom";
 import { useEffect, useState } from "react";
-import { Track } from "livekit-client";
 
 const LocalParticipant = () => {
   const [isChief, setIsChief] = useState(false);
 
-  //NOTE - livekit Hooks
-  const localParticipant = useLocalParticipant();
-  const localPlayerId = localParticipant.localParticipant.identity;
-  const localTrackId = localParticipant.localParticipant.sid;
-
-  // NOTE -  전체 데이터
-  const tracks = useTracks(
-    [
-      { source: Track.Source.Camera, withPlaceholder: true },
-      { source: Track.Source.Microphone, withPlaceholder: true }
-    ],
-    { onlySubscribed: true } // 구독됐을 경우에만 실행
-  );
+  //NOTE - WebRTC room 정보
+  const { userId: localPlayerId, localStream } = useMediaRoom();
 
   //NOTE - global state
   const isGameState = useGameState();
@@ -42,14 +31,12 @@ const LocalParticipant = () => {
   const playerNumber = usePlayerNumber(localPlayerId, isGameState);
 
   const isDiedPlayer = diedPlayers.find((diedPlayer) => diedPlayer === localPlayerId);
-  const localTracks = tracks.filter((track) => track.participant.sid === localTrackId);
 
   //NOTE - 게임 시작 전) 실시간 방장 정보 update
   useEffect(() => {
-    if (!localParticipant.localParticipant.identity || !chiefPlayerId) {
+    if (!localPlayerId || !chiefPlayerId) {
       return;
     }
-    const localPlayerId = localParticipant.localParticipant.identity;
 
     if (isGameState === "gameReady" && localPlayerId === chiefPlayerId.chief) {
       setIsChief(true);
@@ -66,23 +53,25 @@ const LocalParticipant = () => {
         <div className={S.chief}>{isChief && <Image src={ChiefImage} alt={localPlayerId} />}</div>
         {isGameState === "gameStart" && <p className={S.playerNumber}>{playerNumber}번</p>}
       </div>
-      <TrackLoop tracks={localTracks}>
-        <div
-          className={`${S.participantOverlay} ${activePlayerId === localPlayerId ? S.active : ""}`}
-          onClick={isLocalOverlay && !isDiedPlayer ? (e) => clickHandler(e, localPlayerId) : undefined}
-        >
-          <ParticipantTile className={isLocalOverlay ? S.localCam : undefined} />
-          {!isDiedPlayer ? (
-            <div className={`${S.imageOverlay} ${localReadyState[localPlayerId] ? S.active : ""}`}>
-              <Image src={CamCheck} alt={localPlayerId} />
-            </div>
-          ) : (
-            <div className={S.playerDieOverlay}>
-              <Image src={PlayerDieImage} alt={localPlayerId} />
-            </div>
-          )}
-        </div>
-      </TrackLoop>
+      <div
+        className={`${S.participantOverlay} ${S.localVideoBox} ${activePlayerId === localPlayerId ? S.active : ""}`}
+        onClick={isLocalOverlay && !isDiedPlayer ? (e) => clickHandler(e, localPlayerId) : undefined}
+      >
+        <PeerVideo
+          stream={localStream}
+          muted
+          className={`${S.peerVideo} ${S.mirrored} ${isLocalOverlay ? S.localCam : ""}`}
+        />
+        {!isDiedPlayer ? (
+          <div className={`${S.imageOverlay} ${localReadyState[localPlayerId] ? S.active : ""}`}>
+            <Image src={CamCheck} alt={localPlayerId} />
+          </div>
+        ) : (
+          <div className={S.playerDieOverlay}>
+            <Image src={PlayerDieImage} alt={localPlayerId} />
+          </div>
+        )}
+      </div>
       {isGameState === "gameReady" && <GameStartButton isGameState={isGameState} />}
     </div>
   );

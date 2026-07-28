@@ -15,6 +15,7 @@ import { onVoteTo } from "./services/onVoteTo";
 import { onVoteYesOrNo } from "./services/onVoteYesOrNo";
 import { onSelectPlayer } from "./services/onSelectPlayer";
 import { onUpdateRoomInfo } from "./services/onUpdateRoomInfo";
+import { onWebRTCSignal } from "./services/onWebRTCSignal";
 
 const app = express();
 const server = createServer(app);
@@ -59,6 +60,8 @@ mafiaIo.on("connection", (socket) => {
   onVoteYesOrNo(socket);
 
   onSelectPlayer(socket);
+
+  onWebRTCSignal(socket);
 });
 
 server.keepAliveTimeout = 200_000;

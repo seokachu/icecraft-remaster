@@ -70,7 +70,8 @@ const CreateRoomModal = ({ setIsCreate, closeModal }: CreateRoomModalProps) => {
     } catch (error) {}
   };
 
-  const playerOptions = Array.from({ length: 6 }, (_, i) => i + 5);
+  // WebRTC mesh 구조상 인원 상한 6명 (5~6인)
+  const playerOptions = Array.from({ length: 2 }, (_, i) => i + 5);
 
   return (
     <div className={S.modalWrap} onClick={closeModal}>

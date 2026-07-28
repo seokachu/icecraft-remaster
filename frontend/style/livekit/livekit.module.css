@@ -398,3 +398,42 @@
     left: 16px;
   }
 }
+
+/* NOTE - WebRTC 전환: 자체 video 엘리먼트 스타일 */
+.peerVideo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: var(--border-radius);
+  background-color: #111;
+}
+
+.mirrored {
+  transform: rotateY(180deg);
+}
+
+.localVideoBox {
+  width: 100%;
+  max-width: 480px;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+}
+
+.previewVideoBox {
+  width: 100%;
+  max-width: 640px;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: var(--border-radius);
+  background-color: #111;
+  margin: 0 auto;
+}
+
+.previewLoading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: rgba(255, 255, 255, 0.7);
+}

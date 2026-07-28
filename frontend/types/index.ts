@@ -1,4 +1,3 @@
-import { TrackReferenceOrPlaceholder } from "@livekit/components-react";
 import { User } from "@supabase/supabase-js";
 import { StaticImageData } from "next/image";
 import { Tables } from "@/types/supabase";
@@ -26,10 +25,6 @@ export interface VoteResult {
   user_id: string;
   user_nickname: string;
   voted_count: number;
-}
-
-export interface Participants {
-  tracks: TrackReferenceOrPlaceholder[];
 }
 
 export interface playerMedia {
@@ -176,6 +171,7 @@ export interface playersInfo {
   user_id: string;
   user_nickname: string;
   is_ready: boolean;
+  join_time?: string | null;
 }
 
 export interface FormSearchProps {

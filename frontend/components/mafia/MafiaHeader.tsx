@@ -1,22 +1,18 @@
 import MoonIcon from "@/assets/images/moon.svg";
 import SunIcon from "@/assets/images/sun.svg";
 import SpeakTimer from "@/components/mafia/SpeakTimer";
+import { useMediaRoom } from "@/components/mafia/MediaRoom";
 import { useGameState, useIsDay } from "@/store/game-store";
 import { useRoomAction } from "@/store/room-store";
 import S from "@/style/livekit/livekit.module.css";
 import { socket } from "@/utils/socket/socket";
-import { DisconnectButton, useLocalParticipant } from "@livekit/components-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const MafiaHeader = () => {
-  //NOTE - livekit Hooks
-  const localParticipant = useLocalParticipant();
-  const roomId = localParticipant.localParticipant.metadata;
-  const userId = localParticipant.localParticipant.identity;
-  const isLocalCamera = localParticipant.isCameraEnabled;
-  const isLocalMicePhone = localParticipant.isMicrophoneEnabled;
+  //NOTE - WebRTC room 정보
+  const { roomId, userId, localStream } = useMediaRoom();
 
   //NOTE - global state
   const isGameState = useGameState();
@@ -42,19 +38,21 @@ const MafiaHeader = () => {
     setIsEntry(false);
   };
 
-  //NOTE - 방 입장 후 미디어 비활성화할 시 강제퇴장
+  //NOTE - 게임 중 카메라/마이크가 꺼지면(기기 분리, 권한 회수) 강제퇴장
   useEffect(() => {
-    // 초기 렌더링
-    if (!localParticipant.cameraTrack || !localParticipant.microphoneTrack) {
-      return;
-    }
-
-    if (!isLocalCamera || !isLocalMicePhone) {
+    const forceExit = () => {
       socket.emit("exitRoom", roomId, userId);
       router.back();
       setIsEntry(false);
-    }
-  }, [isLocalCamera, isLocalMicePhone]);
+    };
+
+    const tracks = localStream.getTracks();
+    tracks.forEach((track) => track.addEventListener("ended", forceExit));
+
+    return () => {
+      tracks.forEach((track) => track.removeEventListener("ended", forceExit));
+    };
+  }, [localStream, roomId, userId]);
 
   //NOTE - 밤, 낮 배경
   useEffect(() => {
@@ -78,9 +76,9 @@ const MafiaHeader = () => {
   return (
     <div className={`${S.roomBackground} ${resultClassName}`}>
       <div className={S.goToMainPage}>
-        <DisconnectButton onClick={leaveRoom}>
+        <button onClick={leaveRoom}>
           <span>＜</span> 방 나가기
-        </DisconnectButton>
+        </button>
       </div>
       {isGameState === "gameStart" && (
         <div className={S.gameTimer}>

@@ -1,9 +1,9 @@
 import getPlayersNumber from "@/utils/mafia/getPlayersNumber";
-import { useParticipants } from "@livekit/components-react";
+import { useRoomPlayers } from "@/store/players-store";
 import { useEffect, useState } from "react";
 
 const usePlayerNumber = (userId: string, isGameState: string) => {
-  const participants = useParticipants();
+  const players = useRoomPlayers();
   const [playerNumber, setPlayerNumber] = useState<number | null>(null);
 
   useEffect(() => {
@@ -12,14 +12,14 @@ const usePlayerNumber = (userId: string, isGameState: string) => {
     }
 
     if (isGameState === "gameStart") {
-      const allPlayers = getPlayersNumber(participants);
+      const allPlayers = getPlayersNumber(players);
       const playerNumber = allPlayers.find((player) => player.playerId === userId);
 
       if (playerNumber) {
         setPlayerNumber(playerNumber.number);
       }
     }
-  }, [isGameState]);
+  }, [isGameState, players]);
 
   return playerNumber;
 };

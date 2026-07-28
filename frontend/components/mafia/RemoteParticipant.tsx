@@ -1,18 +1,15 @@
 import S from "@/style/livekit/livekit.module.css";
-import { TrackLoop, useLocalParticipant, useTracks } from "@livekit/components-react";
-import { Track } from "livekit-client";
 import RemoteParticipantTile from "@/components/mafia/RemoteParticipantTile";
+import { useMediaRoom } from "@/components/mafia/MediaRoom";
 
 const RemoteParticipant = () => {
-  const { localParticipant } = useLocalParticipant();
-  const tracks = useTracks([{ source: Track.Source.Camera, withPlaceholder: true }], { onlySubscribed: true });
-  const remotesTrack = tracks.filter((track) => track.participant.sid !== localParticipant.sid);
+  const { remotePeers } = useMediaRoom();
 
   return (
     <ul className={S.remoteParticipant}>
-      <TrackLoop tracks={remotesTrack}>
-        <RemoteParticipantTile />
-      </TrackLoop>
+      {remotePeers.map((peer) => (
+        <RemoteParticipantTile key={peer.userId} peer={peer} />
+      ))}
     </ul>
   );
 };

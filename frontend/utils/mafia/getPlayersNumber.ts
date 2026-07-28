@@ -1,21 +1,23 @@
-import { LocalParticipant, RemoteParticipant } from "livekit-client";
-const getPlayersNumber = (participants: (LocalParticipant | RemoteParticipant)[]) => {
+import { playersInfo } from "@/types";
+
+//NOTE - DB의 join_time 기준 정렬이라 모든 클라이언트에서 동일한 번호가 보장된다
+const getPlayersNumber = (players: playersInfo[]) => {
   // NOTE - 입장 시간 및 id 순서로 정렬
-  const gamePlayerName = participants.sort((a, b) => {
+  const sortedPlayers = [...players].sort((a, b) => {
     // 존재 하지 않을 시 제자리
-    if (!a.joinedAt || !b.joinedAt) {
+    if (!a.join_time || !b.join_time) {
       return 0;
     }
-    if (a.joinedAt === b.joinedAt) {
-      return a.identity.localeCompare(b.identity);
+    if (a.join_time === b.join_time) {
+      return a.user_id.localeCompare(b.user_id);
     }
-    return a.joinedAt.getTime() - b.joinedAt.getTime();
+    return new Date(a.join_time).getTime() - new Date(b.join_time).getTime();
   });
   // NOTE - gamePlayers: {playerId, playerName, playerJoinAt, playerNumber}
-  const gamePlayers = gamePlayerName.map((player, index) => ({
-    playerId: player.identity,
-    playerName: player.name,
-    playerJoinAt: player.joinedAt,
+  const gamePlayers = sortedPlayers.map((player, index) => ({
+    playerId: player.user_id,
+    playerName: player.user_nickname,
+    playerJoinAt: player.join_time,
     number: index + 1
   }));
   return gamePlayers;

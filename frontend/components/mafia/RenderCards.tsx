@@ -4,16 +4,16 @@ import MafiaCard from "@/assets/images/Mafia_Card.avif";
 import PoliceCard from "@/assets/images/Police_Card.avif";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { useLocalParticipant } from "@livekit/components-react";
+import { useMediaRoom } from "@/components/mafia/MediaRoom";
 import getPlayerJob from "@/utils/mafia/getPlayerJob";
 import { useRoleModalElement } from "@/store/show-modal-store";
 
 const RenderCards = () => {
   const role = useRoleModalElement();
-  const { localParticipant } = useLocalParticipant();
+  const { userId } = useMediaRoom();
   const [showAllCards, setShowAllCards] = useState(true);
 
-  const playerJob = getPlayerJob(role, localParticipant.identity);
+  const playerJob = getPlayerJob(role, userId);
 
   const cards = {
     doctor: { src: DoctorCard.src, alt: "의사" },

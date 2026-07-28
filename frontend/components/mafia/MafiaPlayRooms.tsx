@@ -4,36 +4,36 @@ import useSocketOn from "@/hooks/useSocketOn";
 import { pretendard } from "@/public/fonts/fonts";
 import { useGameActions, useGameState, useVictoryPlayers } from "@/store/game-store";
 import { useOverLayActions } from "@/store/overlay-store";
+import { usePlayersActions } from "@/store/players-store";
 import { useModalActions } from "@/store/show-modal-store";
 import S from "@/style/livekit/livekit.module.css";
 import { MediaStatus, playersInfo } from "@/types";
 
 import { Tables } from "@/types/supabase";
 import { socket } from "@/utils/socket/socket";
-import { RoomAudioRenderer, useLocalParticipant } from "@livekit/components-react";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import LocalParticipant from "@/components/mafia/LocalParticipant";
 import MafiaHeader from "@/components/mafia/MafiaHeader";
 import MafiaModals from "@/components/mafia/MafiaModals";
 import MafiaToolTip from "@/components/mafia/MafiaToolTip";
 import RemoteParticipant from "@/components/mafia/RemoteParticipant";
+import { useMediaRoom } from "@/components/mafia/MediaRoom";
 import { getRankingScore, setRankingScore } from "@/utils/supabase/rankingAPI";
 
 const MafiaPlayRooms = () => {
-  const hasEmitted = useRef(false);
-
-  //NOTE - livekit Hooks
-  const localParticipant = useLocalParticipant();
+  //NOTE - WebRTC room 정보
+  const { roomId, userId } = useMediaRoom();
 
   //NOTE - global state
   const isGameState = useGameState();
   const victoryPlayers = useVictoryPlayers();
   const { setPresentRoomId, setChiefPlayerId, setDiedPlayer, setIsGameState, setGameReset } = useGameActions();
   const { setReadyPlayers, setOverlayReset } = useOverLayActions();
+  const { setPlayers, setPlayersReset } = usePlayersActions();
   const { setModalReset } = useModalActions();
 
   //NOTE - custom Hooks
-  useSelectSocket(localParticipant);
+  useSelectSocket(userId);
 
   const { setIsMediaReset, setPlayersMediaStatus } = useMediaDevice(); // 카메라 및 오디오 처리
 
@@ -42,19 +42,15 @@ const MafiaPlayRooms = () => {
     setOverlayReset(); //Local,Remote 클릭 이벤트 및 캠 이미지 초기화
     setModalReset(); //전체 모달 요소 초기화
     setGameReset(); // 죽은 players 및 게임 state 초기화
+    setPlayersReset(); // 방 명단 초기화
   }, []);
 
   //NOTE - 방 입장 시 방의 정보를 불러온다.
   useEffect(() => {
-    if (localParticipant.localParticipant.metadata && !hasEmitted.current) {
-      const roomId = localParticipant.localParticipant.metadata;
-
-      setPresentRoomId(roomId);
-      socket.emit("updateRoomInfo", roomId);
-      socket.emit("usersInfo", roomId);
-      hasEmitted.current = true;
-    }
-  }, [localParticipant]);
+    setPresentRoomId(roomId);
+    socket.emit("updateRoomInfo", roomId);
+    socket.emit("usersInfo", roomId);
+  }, [roomId]);
 
   const sockets = {
     //NOTE - 전체 players의 실시간 Ready 상태
@@ -80,8 +76,9 @@ const MafiaPlayRooms = () => {
         setChiefPlayerId({ chief: roomInfo.chief, roomId: roomInfo.room_id });
       }
     },
-    //NOTE - players의 초기 Ready 상태
+    //NOTE - players의 초기 Ready 상태 및 방 명단
     usersInfo: (players: playersInfo[]) => {
+      setPlayers(players);
       players.forEach((player) => {
         setReadyPlayers(player.user_id, player.is_ready);
       });
@@ -100,16 +97,15 @@ const MafiaPlayRooms = () => {
   useEffect(() => {
     const updateVictoryRanking = async () => {
       try {
-        const localPlayerId = localParticipant.localParticipant.identity;
-        const { mafia_score, music_score } = await getRankingScore(localPlayerId);
-        const isVictoryPlayer = victoryPlayers.find((playerId) => playerId === localPlayerId);
+        const { mafia_score, music_score } = await getRankingScore(userId);
+        const isVictoryPlayer = victoryPlayers.find((playerId) => playerId === userId);
 
         const newScore = isVictoryPlayer ? 100 : 20;
         const newMafia_score = mafia_score + newScore;
         const newMusic_score = music_score;
         const total_score = newMafia_score + newMusic_score;
 
-        await setRankingScore(localPlayerId, newMafia_score, newMusic_score, total_score);
+        await setRankingScore(userId, newMafia_score, newMusic_score, total_score);
       } catch (error) {
       } finally {
         setOverlayReset(); //Local,Remote 클릭 이벤트 및 캠 이미지 초기화
@@ -132,7 +128,6 @@ const MafiaPlayRooms = () => {
       <div className={S.mafiaPlayRoomSection}>
         <LocalParticipant />
         <RemoteParticipant />
-        <RoomAudioRenderer muted={false} /> {/* 원격 참가자 오디오 트랙 처리 및 관리 */}
         <MafiaToolTip />
         <MafiaModals />
       </div>

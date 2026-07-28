@@ -1,14 +1,15 @@
 import useSocketOn from "@/hooks/useSocketOn";
 import { socket } from "@/utils/socket/socket";
-import { useLocalParticipant, useParticipants } from "@livekit/components-react";
 import { useEffect, useState } from "react";
 import S from "@/style/livekit/livekit.module.css";
+import { useMediaRoom } from "@/components/mafia/MediaRoom";
+import { useRoomPlayers } from "@/store/players-store";
 
 const GameStartButton = ({ isGameState }: { isGameState: string }) => {
-  const participants = useParticipants();
+  const { roomId, userId } = useMediaRoom();
+  const players = useRoomPlayers();
   const [isReady, setIsReady] = useState(false);
   const [isAllReady, setIsAllReady] = useState(false);
-  const { localParticipant } = useLocalParticipant();
 
   //NOTE - 방장에게만, "게임시작 버튼" 활성화 및 비활성화
   const sockets = {
@@ -33,16 +34,14 @@ const GameStartButton = ({ isGameState }: { isGameState: string }) => {
 
   //NOTE - 게임 준비 이벤트 핸들러
   const readyHandler = () => {
-    const playerId = localParticipant.identity;
     const newIsReady = !isReady;
     setIsReady(newIsReady);
-    socket.emit("setReady", playerId, newIsReady);
+    socket.emit("setReady", userId, newIsReady);
   };
 
   //NOTE - 게임 시작 이벤트 핸들러
   const startHandler = () => {
-    const roomId = localParticipant.metadata;
-    const playersCount = participants.length;
+    const playersCount = players.length;
     socket.emit("gameStart", roomId, playersCount);
   };
 

@@ -9,7 +9,7 @@ import PoliceToolTipText from "@/assets/images/police_ToolTip_text.svg";
 import { useRoleModalElement } from "@/store/show-modal-store";
 import S from "@/style/livekit/livekit.module.css";
 import getPlayerJob from "@/utils/mafia/getPlayerJob";
-import { useLocalParticipant } from "@livekit/components-react";
+import { useMediaRoom } from "@/components/mafia/MediaRoom";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
@@ -34,14 +34,14 @@ const toolTipInfo: { [key: string]: { icon: string; text: string } } = {
 
 const MafiaToolTip = () => {
   const role = useRoleModalElement();
-  const { localParticipant } = useLocalParticipant();
+  const { userId } = useMediaRoom();
   const [playerJob, setPlayerJob] = useState<string | undefined>("");
 
   useEffect(() => {
     if (!role) {
       return;
     }
-    const job = getPlayerJob(role, localParticipant.identity);
+    const job = getPlayerJob(role, userId);
 
     //NOTE - 직업 카드
     const toolTipTimer = setTimeout(() => {

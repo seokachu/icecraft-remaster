@@ -14,6 +14,11 @@ const Rankingpage = async () => {
   const rankingList = await getUsersRanking();
 
   const setRanking = async (rankingList: Ranking[]) => {
+    // 랭킹 데이터가 없으면(신규 프로젝트 등) 계산 생략
+    if (rankingList.length === 0) {
+      return;
+    }
+
     let sameScoreCount = 1;
     let ranking = 1;
 

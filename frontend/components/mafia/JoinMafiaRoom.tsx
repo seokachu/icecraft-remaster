@@ -1,20 +1,20 @@
+"use client";
+
 import MafiaPlayRooms from "@/components/mafia/MafiaPlayRooms";
+import MediaRoomProvider from "@/components/mafia/MediaRoom";
+import PeerVideo from "@/components/mafia/PeerVideo";
 import useBeforeUnloadHandler from "@/hooks/useBeforeUnloadHandler";
 import usePopStateHandler from "@/hooks/usePopStateHandler";
 import { useRoomAction } from "@/store/room-store";
 import Style from "@/style/commons/commons.module.css";
 import S from "@/style/livekit/livekit.module.css";
-import { getToken } from "@/utils/livekit/liveKitApi";
 import { socket } from "@/utils/socket/socket";
-import { LiveKitRoom, PreJoin } from "@livekit/components-react";
-import "@livekit/components-styles";
 import { useParams, useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import MediaError from "@/assets/images/media_error.svg";
 import SorryImage from "@/assets/images/sorry_image.avif";
 import Image from "next/image";
 import { checkUserLogIn } from "@/utils/supabase/authAPI";
-import { MediaDeviceFailure } from "livekit-client";
 
 const JoinMafiaRoom = () => {
   const roomId = useParams();
@@ -22,10 +22,11 @@ const JoinMafiaRoom = () => {
     userId: "",
     nickname: ""
   });
-  const [token, setToken] = useState("");
+  const [localStream, setLocalStream] = useState<MediaStream | null>(null);
   const [isMediaError, setIsMediaError] = useState(false);
-  const [isTokenError, setIsTokenError] = useState(false);
+  const [isJoinError, setIsJoinError] = useState(false);
   const [isJoin, setIsJoin] = useState(false);
+  const streamRef = useRef<MediaStream | null>(null);
   const isPopState = usePopStateHandler();
   const { setIsReLoad } = useBeforeUnloadHandler();
   const { setIsEntry } = useRoomAction();
@@ -50,32 +51,39 @@ const JoinMafiaRoom = () => {
           setUserInfo({ userId: loginInfo.id, nickname });
         }
       } catch (error) {
-        joinErrorHandler(error);
+        setIsJoinError(true);
       }
     };
 
     checkUserInfo();
   }, []);
 
-  //NOTE - 토큰 발급
+  //NOTE - 카메라/마이크 획득 (미리보기 및 통화에 같은 스트림 사용)
   useEffect(() => {
-    const userToken = async () => {
-      try {
-        const token = await getToken(roomId.id, userInfo.userId, userInfo.nickname);
+    let isCancelled = false;
 
-        if (token) {
-          setToken(token);
+    const getMedia = async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        if (isCancelled) {
+          stream.getTracks().forEach((track) => track.stop());
+          return;
         }
+        streamRef.current = stream;
+        setLocalStream(stream);
       } catch (error) {
-        joinErrorHandler(error);
+        setIsMediaError(true);
       }
     };
 
-    // 로그인 정보 존재 시
-    if (userInfo.userId && userInfo.nickname) {
-      userToken();
-    }
-  }, [userInfo]);
+    getMedia();
+
+    return () => {
+      isCancelled = true;
+      streamRef.current?.getTracks().forEach((track) => track.stop());
+      streamRef.current = null;
+    };
+  }, []);
 
   //NOTE - 방입장 이벤트
   const joinRoomHandler = () => {
@@ -83,20 +91,8 @@ const JoinMafiaRoom = () => {
     setIsJoin(true); //방 입장
   };
 
-  //NOTE - 에러 이벤트 핸들러(로그인, 토큰, 방입장 등)
-  const joinErrorHandler = (error: Error | string | unknown) => {
-    console.log("error", error);
-    setIsTokenError(true);
-  };
-
-  //NOTE - 에러 이벤트 핸들러(미디어 장치)
-  const mediaErrorHandler = useCallback((error: Error | MediaDeviceFailure | undefined) => {
-    console.log("error", error);
-    setIsMediaError(true);
-  }, []);
-
-  //NOTE - 토큰 에러 UI
-  if (isTokenError) {
+  //NOTE - 에러 이벤트 핸들러(로그인, 방입장 등)
+  if (isJoinError) {
     return (
       <section className={Style.mainSection}>
         <Image src={SorryImage} alt="sorry image" />
@@ -170,38 +166,32 @@ const JoinMafiaRoom = () => {
   }
 
   return (
-    <main data-lk-theme="default">
-      {isJoin ? (
-        <>
-          <LiveKitRoom
-            token={token}
-            serverUrl={process.env.NEXT_PUBLIC_LIVEKIT_URL}
-            connect={true}
-            video={true}
-            audio={true}
-            onError={joinErrorHandler}
-            onMediaDeviceFailure={(mediaError) => mediaErrorHandler(mediaError)}
-          >
-            <MafiaPlayRooms />
-          </LiveKitRoom>
-        </>
+    <main>
+      {isJoin && localStream && userInfo.userId ? (
+        <MediaRoomProvider
+          roomId={roomId.id as string}
+          userId={userInfo.userId}
+          nickname={userInfo.nickname}
+          localStream={localStream}
+        >
+          <MafiaPlayRooms />
+        </MediaRoomProvider>
       ) : (
         <section className={S.settingWrapper}>
           <h2>오디오 & 캠 설정 창 입니다.</h2>
           <div className={S.settingCam}>
-            <PreJoin
-              joinLabel="입장하기"
-              onSubmit={joinRoomHandler}
-              onValidate={() => !isMediaError || !isTokenError}
-              onError={mediaErrorHandler}
-            ></PreJoin>
-            <div className={S.settingUserButton}>
-              <ul>
-                <li>오디오 설정 </li>
-                <li>캠 설정 </li>
-              </ul>
+            <div className={S.previewVideoBox}>
+              {localStream ? (
+                <PeerVideo stream={localStream} muted className={`${S.peerVideo} ${S.mirrored}`} />
+              ) : (
+                <p className={S.previewLoading}>카메라 연결 중...</p>
+              )}
             </div>
-            <div className={S.cover}></div>
+            <div className={S.settingUserButton}>
+              <button onClick={joinRoomHandler} disabled={!localStream || !userInfo.userId}>
+                입장하기
+              </button>
+            </div>
           </div>
         </section>
       )}

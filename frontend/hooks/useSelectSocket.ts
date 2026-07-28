@@ -2,10 +2,9 @@ import { useDiedPlayer } from "@/store/game-store";
 import { useInSelect, useOverLayActions } from "@/store/overlay-store";
 import { useRoleModalElement } from "@/store/show-modal-store";
 import getPlayerJob from "@/utils/mafia/getPlayerJob";
-import { LocalParticipant } from "livekit-client";
 import { useEffect } from "react";
 
-const useSelectSocket = ({ localParticipant }: { localParticipant: LocalParticipant }) => {
+const useSelectSocket = (localPlayerId: string) => {
   const inSelect = useInSelect();
   const role = useRoleModalElement();
   const diedPlayerId = useDiedPlayer();
@@ -13,7 +12,6 @@ const useSelectSocket = ({ localParticipant }: { localParticipant: LocalParticip
 
   // NOTE - 투표, 직업 시간별 캠 클릭 활성화
   useEffect(() => {
-    const localPlayerId = localParticipant.identity;
     const isDiedPlayer = diedPlayerId.find((playerId) => localPlayerId === playerId);
 
     // //NOTE - 특정 시간이 아닐 경우 및 죽은 player일 경우

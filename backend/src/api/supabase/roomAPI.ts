@@ -190,7 +190,7 @@ export const getUsersIdInRoom = async (roomId: string) => {
 export const getUsersInfoInRoom = async (roomId: string) => {
   const { data, error } = await supabase
     .from("room_user_match_table")
-    .select("user_id, user_nickname, is_ready")
+    .select("user_id, user_nickname, is_ready, join_time")
     .eq("room_id", roomId);
 
   if (error) {

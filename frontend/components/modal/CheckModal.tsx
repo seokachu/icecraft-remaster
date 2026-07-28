@@ -3,7 +3,7 @@ import { useGroupModalElement, useVoteResultElement } from "@/store/show-modal-s
 import S from "@/style/modal/modal.module.css";
 import ModalProgress from "@/utils/ModalProgress";
 import { socket } from "@/utils/socket/socket";
-import { useLocalParticipant } from "@livekit/components-react";
+import { useMediaRoom } from "@/components/mafia/MediaRoom";
 import { useEffect, useState } from "react";
 
 const CheckModal = () => {
@@ -12,8 +12,7 @@ const CheckModal = () => {
   const [isVote, setIsVote] = useState<boolean | null>(null);
 
   const diedPlayerId = useDiedPlayer();
-  const { localParticipant } = useLocalParticipant();
-  const localPlayerId = localParticipant.identity;
+  const { userId: localPlayerId } = useMediaRoom();
 
   // 가장 많은 투표 수를 받는 player
   const votePlayer = voteResults[0];

@@ -1,19 +1,14 @@
 import { MediaStatus } from "@/types";
-import { useLocalParticipant, useRemoteParticipants } from "@livekit/components-react";
-import { Track } from "livekit-client";
+import { useMediaRoom } from "@/components/mafia/MediaRoom";
 import { useEffect, useState } from "react";
 
-//NOTE - playersMedias 구조: {userId: {cam: boolean, mike: boolean}}
+//NOTE - playersMedias 구조: {userId: {camera: boolean, mike: boolean}}
+//NOTE - 자신의 미디어는 송출 트랙을, 상대의 미디어는 수신 트랙의 로컬 재생을 끄고 켠다
 const useMediaDevice = () => {
   const [playersMediaStatus, setPlayersMediaStatus] = useState<MediaStatus | null>(null);
   const [isMediaReset, setIsMediaReset] = useState(false);
 
-  //로컬 player의 정보
-  const localParticipant = useLocalParticipant();
-  const localPlayerId = localParticipant.localParticipant.identity;
-
-  //원격 player들의 정보
-  const remoteTracks = useRemoteParticipants();
+  const { userId: localPlayerId, localStream, remotePeers } = useMediaRoom();
 
   //NOTE - 미디어 관리
   useEffect(() => {
@@ -27,52 +22,33 @@ const useMediaDevice = () => {
     userIdList.forEach((playerId) => {
       const isMedia = playersMediaStatus[playerId];
 
-      //NOTE - 로컬 사용자의 미디어
-      if (localPlayerId == playerId) {
-        const localCamera = localParticipant.cameraTrack?.track?.mediaStreamTrack;
-        const localMike = localParticipant.microphoneTrack?.track?.mediaStreamTrack;
-
-        localCamera!.enabled = isMedia.camera;
-        localMike!.enabled = isMedia.mike;
+      //NOTE - 로컬 사용자의 미디어 (송출 자체를 on/off)
+      if (localPlayerId === playerId) {
+        localStream.getVideoTracks().forEach((track) => (track.enabled = isMedia.camera));
+        localStream.getAudioTracks().forEach((track) => (track.enabled = isMedia.mike));
       }
 
-      //NOTE - 원격 사용자들의 미디어
+      //NOTE - 원격 사용자들의 미디어 (내 화면에서의 재생을 on/off)
       if (localPlayerId !== playerId) {
-        //특정 plyer의 track(카메라 및 오디오 데이터)
-        const remotePlayerTrack = remoteTracks.find((track) => track.identity === playerId);
+        const remotePeer = remotePeers.find((peer) => peer.userId === playerId);
 
-        //Type 좁히기: "remotePlayerTrack": RemoteParticipant | undefined
-        if (!remotePlayerTrack) {
+        if (!remotePeer) {
           return;
         }
 
-        const camera = remotePlayerTrack.getTrackPublication(Track.Source.Camera);
-        const mike = remotePlayerTrack.getTrackPublication(Track.Source.Microphone);
-
-        camera!.track!.mediaStreamTrack.enabled = isMedia.camera;
-        mike!.track!.mediaStreamTrack.enabled = isMedia.mike;
+        remotePeer.stream.getVideoTracks().forEach((track) => (track.enabled = isMedia.camera));
+        remotePeer.stream.getAudioTracks().forEach((track) => (track.enabled = isMedia.mike));
       }
     });
-  }, [playersMediaStatus]);
+  }, [playersMediaStatus, remotePeers]);
 
   //NOTE - 게임 종료 시 모든 player 캠 및 오디오 on
   useEffect(() => {
     if (isMediaReset) {
-      //로컬 사용자의 미디어
-      if (localPlayerId) {
-        const localCamera = localParticipant.cameraTrack?.track?.mediaStreamTrack;
-        const localMike = localParticipant.microphoneTrack?.track?.mediaStreamTrack;
+      localStream.getTracks().forEach((track) => (track.enabled = true));
 
-        localCamera!.enabled = true;
-        localMike!.enabled = true;
-      }
-
-      remoteTracks.forEach((remotePlayerTrack) => {
-        const camera = remotePlayerTrack.getTrackPublication(Track.Source.Camera);
-        const mike = remotePlayerTrack.getTrackPublication(Track.Source.Microphone);
-
-        camera!.track!.mediaStreamTrack.enabled = true;
-        mike!.track!.mediaStreamTrack.enabled = true;
+      remotePeers.forEach((peer) => {
+        peer.stream.getTracks().forEach((track) => (track.enabled = true));
       });
 
       //초기화
