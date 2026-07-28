@@ -26,9 +26,8 @@ export interface YesOrNoVoteResult {
   };
 }
 
-export interface Media {
-  [key: string]: { [key: string]: boolean };
-}
+// 소켓으로 나가는 미디어 맵 — 공유 이벤트 타입과 동일한 형태를 강제
+export type { MediaStatus as Media } from "../../shared/socket-events";
 
 export interface RoundStatus {
   [key: string]: string;

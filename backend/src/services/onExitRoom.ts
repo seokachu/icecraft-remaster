@@ -1,10 +1,10 @@
 import { Namespace, Socket } from "socket.io";
-import { DefaultEventsMap } from "socket.io/dist/typed-events";
+import { ClientToServerEvents, ServerToClientEvents } from "../../../shared/socket-events";
 import { exitRoom, getRoomInfo } from "../api/supabase/roomAPI";
 
 export const onExitRoom = async (
-  socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>,
-  mafiaIo: Namespace<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>
+  socket: Socket<ClientToServerEvents, ServerToClientEvents>,
+  mafiaIo: Namespace<ClientToServerEvents, ServerToClientEvents>
 ) => {
   socket.on("exitRoom", async (roomId, userId) => {
     console.log(`[exitRoom] roomId : ${roomId}, userId : ${userId}`);

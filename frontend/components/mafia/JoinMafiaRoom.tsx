@@ -17,7 +17,8 @@ import Image from "next/image";
 import { checkUserLogIn } from "@/utils/supabase/authAPI";
 
 const JoinMafiaRoom = () => {
-  const roomId = useParams();
+  const params = useParams();
+  const roomId = (Array.isArray(params.id) ? params.id[0] : params.id) ?? "";
   const [userInfo, setUserInfo] = useState({
     userId: "",
     nickname: ""
@@ -36,7 +37,7 @@ const JoinMafiaRoom = () => {
   //NOTE - 뒤로가기 시 작동
   useEffect(() => {
     if (isPopState) {
-      socket.emit("exitRoom", roomId.id, userInfo.userId);
+      socket.emit("exitRoom", roomId, userInfo.userId);
       setIsEntry(false);
     }
   }, [isPopState]);
@@ -103,7 +104,7 @@ const JoinMafiaRoom = () => {
         </h3>
         <button
           onClick={() => {
-            socket.emit("exitRoom", roomId.id, userInfo.userId);
+            socket.emit("exitRoom", roomId, userInfo.userId);
             router.back();
             setIsEntry(false);
           }}
@@ -129,7 +130,7 @@ const JoinMafiaRoom = () => {
         <h3>마이크 및 카메라 권한 설정을 확인 후 진행해 주세요.</h3>
         <button
           onClick={() => {
-            socket.emit("exitRoom", roomId.id, userInfo.userId);
+            socket.emit("exitRoom", roomId, userInfo.userId);
             router.back();
             setIsEntry(false);
           }}
@@ -169,7 +170,7 @@ const JoinMafiaRoom = () => {
     <main>
       {isJoin && localStream && userInfo.userId ? (
         <MediaRoomProvider
-          roomId={roomId.id as string}
+          roomId={roomId}
           userId={userInfo.userId}
           nickname={userInfo.nickname}
           localStream={localStream}

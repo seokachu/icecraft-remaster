@@ -1,9 +1,9 @@
 import { Socket } from "socket.io";
-import { DefaultEventsMap } from "socket.io/dist/typed-events";
+import { ClientToServerEvents, ServerToClientEvents } from "../../../shared/socket-events";
 import { voteYesOrNo } from "../api/supabase/gamePlayAPI";
 
 export const onVoteYesOrNo = async (
-  socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>
+  socket: Socket<ClientToServerEvents, ServerToClientEvents>
 ) => {
   socket.on("voteYesOrNo", async (yesOrNo) => {
     console.log(`[voteYesOrNo] 찬성/반대 : ${yesOrNo}`);

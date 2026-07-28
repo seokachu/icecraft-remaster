@@ -1,5 +1,5 @@
 import { Socket } from "socket.io";
-import { DefaultEventsMap } from "socket.io/dist/typed-events";
+import { ClientToServerEvents, ServerToClientEvents } from "../../../shared/socket-events";
 
 /**
  * WebRTC mesh 시그널링 릴레이
@@ -9,7 +9,7 @@ import { DefaultEventsMap } from "socket.io/dist/typed-events";
  * - webrtcOffer / webrtcAnswer / webrtcIce: SDP·ICE를 상대에게 그대로 릴레이
  */
 export const onWebRTCSignal = (
-  socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>
+  socket: Socket<ClientToServerEvents, ServerToClientEvents>
 ) => {
   socket.on("mediaReady", (roomId, userId, nickname) => {
     socket.to(roomId).emit("mediaReady", userId, nickname);

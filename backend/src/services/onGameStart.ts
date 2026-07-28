@@ -1,5 +1,5 @@
 import { Namespace, Socket } from "socket.io";
-import { DefaultEventsMap } from "socket.io/dist/typed-events";
+import { ClientToServerEvents, ServerToClientEvents } from "../../../shared/socket-events";
 import { getChief, getRoomInfo, setRoomIsPlaying } from "../api/supabase/roomAPI";
 import { isGameActive, registerGame, reserveGame, unregisterGame } from "../api/socket/gameRegistry";
 import {
@@ -29,8 +29,8 @@ import {
   setPlayerRole,
 } from "../api/supabase/gamePlayAPI";
 export const onGameStart = async (
-  socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>,
-  mafiaIo: Namespace<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>
+  socket: Socket<ClientToServerEvents, ServerToClientEvents>,
+  mafiaIo: Namespace<ClientToServerEvents, ServerToClientEvents>
 ) => {
   socket.on("gameStart", async (roomId, playersMaxCount) => {
     console.log(`[gameStart] roomId : ${roomId}, 총 인원 : ${playersMaxCount}`);
@@ -439,8 +439,16 @@ export const onGameStart = async (
           console.log(
             `[${roundName}] showVoteResult : 마피아 의심 투표 결과 / 5초`
           );
-          console.log(voteBoard);
-          mafiaIo.to(roomId).emit("showVoteResult", voteBoard, time);
+          //NOTE - role은 마피아 정체이므로 클라이언트에 절대 내보내지 않는다
+          const publicVoteBoard = voteBoard.map(
+            ({ user_id, user_nickname, voted_count, is_lived }) => ({
+              user_id,
+              user_nickname,
+              voted_count,
+              is_lived,
+            })
+          );
+          mafiaIo.to(roomId).emit("showVoteResult", publicVoteBoard, time);
 
           console.log(`${roundName} 종료`);
           roundName = roundStatus.R1_7;

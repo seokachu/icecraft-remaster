@@ -1,9 +1,9 @@
 import { Socket } from "socket.io";
-import { DefaultEventsMap } from "socket.io/dist/typed-events";
+import { ClientToServerEvents, ServerToClientEvents } from "../../../shared/socket-events";
 import { createRoom } from "../api/supabase/roomAPI";
 
 export const onCreateRoom = async (
-  socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>
+  socket: Socket<ClientToServerEvents, ServerToClientEvents>
 ) => {
   socket.on("createRoom", async (title, game_category, total_user_count) => {
     console.log(

@@ -2,6 +2,7 @@ import "dotenv/config";
 import express from "express";
 import { createServer } from "http";
 import { Server } from "socket.io";
+import { ClientToServerEvents, ServerToClientEvents } from "../../shared/socket-events";
 import { onEnterMafia } from "./services/onEnterMafia";
 import { onCreateRoom } from "./services/onCreateRoom";
 import { onJoinRoom } from "./services/onJoinRoom";
@@ -23,7 +24,7 @@ const port = Number(process.env.PORT) || 4000;
 const allowedOrigins = (process.env.ALLOWED_ORIGINS ?? "http://localhost:3000")
   .split(",")
   .map((origin) => origin.trim());
-const io = new Server(server, {
+const io = new Server<ClientToServerEvents, ServerToClientEvents>(server, {
   cors: {
     origin: allowedOrigins,
   },

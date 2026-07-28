@@ -1,5 +1,5 @@
 import { Namespace } from "socket.io";
-import { DefaultEventsMap } from "socket.io/dist/typed-events";
+import { ClientToServerEvents, ServerToClientEvents } from "../../../../shared/socket-events";
 import {
   AllPlayer,
   MostVotedPlayer,
@@ -24,7 +24,7 @@ import { unregisterGame } from "./gameRegistry";
 
 export const canGameStart = async (
   roomId: string,
-  mafiaIo: Namespace<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>
+  mafiaIo: Namespace<ClientToServerEvents, ServerToClientEvents>
 ) => {
   console.log("게임 진행 가능 확인");
   let canStart = false;
@@ -159,7 +159,7 @@ export const getRoleMaxCount = (totalCount: number) => {
 export const playError = async (
   roundName: string,
   roomId: string,
-  mafiaIo: Namespace<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>,
+  mafiaIo: Namespace<ClientToServerEvents, ServerToClientEvents>,
   error: Error,
   start: NodeJS.Timeout | null,
   roundStatus: RoundStatus
@@ -178,7 +178,7 @@ export const playError = async (
 };
 
 export const gameOver = async (
-  mafiaIo: Namespace<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>,
+  mafiaIo: Namespace<ClientToServerEvents, ServerToClientEvents>,
   roomId: string,
   roundName: string,
   allPlayers: AllPlayer[],

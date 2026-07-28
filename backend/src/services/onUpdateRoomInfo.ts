@@ -1,9 +1,9 @@
 import { Socket } from "socket.io";
-import { DefaultEventsMap } from "socket.io/dist/typed-events";
+import { ClientToServerEvents, ServerToClientEvents } from "../../../shared/socket-events";
 import { getRoomInfo } from "../api/supabase/roomAPI";
 
 export const onUpdateRoomInfo = async (
-  socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>
+  socket: Socket<ClientToServerEvents, ServerToClientEvents>
 ) => {
   socket.on("updateRoomInfo", async (roomId) => {
     console.log(`[updateRoomInfo] roomId : ${roomId}`);

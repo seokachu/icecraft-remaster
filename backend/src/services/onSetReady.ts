@@ -1,11 +1,11 @@
 import { Namespace, Socket } from "socket.io";
-import { DefaultEventsMap } from "socket.io/dist/typed-events";
+import { ClientToServerEvents, ServerToClientEvents } from "../../../shared/socket-events";
 import { setReady } from "../api/supabase/gamePlayAPI";
 import { canGameStart } from "../api/socket/moderatorAPI";
 
 export const onSetReady = async (
-  socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>,
-  mafiaIo: Namespace<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>
+  socket: Socket<ClientToServerEvents, ServerToClientEvents>,
+  mafiaIo: Namespace<ClientToServerEvents, ServerToClientEvents>
 ) => {
   socket.on("setReady", async (userId, ready) => {
     console.log(`[setReady] userId : ${userId}, ready : ${ready}`);

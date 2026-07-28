@@ -17,8 +17,9 @@ export interface SocketEventHandler {
   [eventName: string]: (...args: any[]) => void;
 }
 
+// 5인 게임에서는 doctor/police가 null (공유 타입 PlayerRoles와 동일 형태)
 export interface Role {
-  [job: string]: string[];
+  [job: string]: string[] | null;
 }
 
 export interface VoteResult {

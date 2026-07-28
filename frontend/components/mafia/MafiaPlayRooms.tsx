@@ -64,9 +64,11 @@ const MafiaPlayRooms = () => {
     playerMediaStatus: (playersMedias: MediaStatus) => {
       setPlayersMediaStatus(playersMedias);
     },
-    //NOTE - 죽은 player 관리
-    diedPlayer: (playerId: string) => {
-      setDiedPlayer(playerId);
+    //NOTE - 죽은 player 관리 (의사가 살리면 null이 올 수 있음)
+    diedPlayer: (playerId: string | null) => {
+      if (playerId) {
+        setDiedPlayer(playerId);
+      }
     },
     //NOTE - 방에 대한 정보
     updateRoomInfo: (roomInfo: Tables<"room_table">) => {
