@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { checkUserEmailRegistered, registerAccount } from "@/utils/supabase/accountAPI";
+import { checkUserEmailRegistered } from "@/utils/supabase/accountAPI";
 import { InputMessage } from "@/components/register/InputMessage";
 import { oAuthLogIn, oAuthRegister } from "@/utils/supabase/authAPI";
 import KakaoLoginIcon from "@/assets/images/join_kakaotalk.svg";
@@ -184,8 +184,8 @@ const Register = () => {
     try {
       const userId = await oAuthRegister(email, password, nickname);
 
+      // 계정 생성은 DB 트리거(handle_new_user)가 자동 처리
       if (userId) {
-        await registerAccount(userId, email, nickname);
         router.replace("/main");
       } else {
         throw new Error("회원 가입 실패");

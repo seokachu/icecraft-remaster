@@ -1,7 +1,6 @@
 "use client";
 
 import S from "@/style/mainpage/main.module.css";
-import { checkUserEmailRegistered, registerAccount } from "@/utils/supabase/accountAPI";
 import { checkUserLogIn } from "@/utils/supabase/authAPI";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -10,21 +9,11 @@ import { toast } from "react-toastify";
 const SnsLogIn = () => {
   const router = useRouter();
 
+  //NOTE - 계정 생성은 DB 트리거(handle_new_user)가 자동 처리 — 세션 확인 후 이동만 한다
   useEffect(() => {
-    const register = async () => {
+    const confirmLogin = async () => {
       try {
-        const userInfo = await checkUserLogIn();
-        if (userInfo) {
-          const email = userInfo.email;
-          const nickname = userInfo.user_metadata.name;
-          const userId = userInfo.id;
-
-          const isEmailRegistered = await checkUserEmailRegistered(email!);
-
-          if (!isEmailRegistered) {
-            await registerAccount(userId, email!, nickname);
-          }
-        }
+        await checkUserLogIn();
       } catch (error) {
         toast.error("SNS 로그인이 실패했습니다.");
       } finally {
@@ -32,7 +21,7 @@ const SnsLogIn = () => {
       }
     };
 
-    register();
+    confirmLogin();
   }, []);
 
   return (

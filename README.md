@@ -39,6 +39,15 @@ npm run dev
 4. Authentication > URL Configuration에서 Site URL을 배포 도메인으로 설정
 5. Settings > API의 URL과 anon key를 프론트/백엔드 환경변수에 입력
 
+## 보안 설정 (RLS)
+
+`supabase/rls.sql`이 RLS·계정 자동 생성 트리거·컬럼 차단(마피아 role 은닉)을 설정합니다. **반드시 이 순서로 적용하세요:**
+
+1. Render의 `icecraft-backend` 환경변수에 `SUPABASE_SERVICE_ROLE_KEY` 추가 (Supabase Settings > API의 service_role secret) → 재배포 완료 대기
+2. Supabase SQL Editor에서 `supabase/rls.sql` 전체 실행
+
+순서를 지키지 않으면(BE가 anon key인 상태에서 RLS를 켜면) 게임 진행이 전부 막힙니다.
+
 ## 배포 (무료 티어)
 
 | 대상 | 플랫폼 | 방법 |

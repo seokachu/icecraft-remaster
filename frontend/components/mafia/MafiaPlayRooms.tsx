@@ -2,7 +2,7 @@ import useMediaDevice from "@/hooks/useMediaDevice";
 import useSelectSocket from "@/hooks/useSelectSocket";
 import useSocketOn from "@/hooks/useSocketOn";
 import { pretendard } from "@/public/fonts/fonts";
-import { useGameActions, useGameState, useVictoryPlayers } from "@/store/game-store";
+import { useGameActions, useGameState } from "@/store/game-store";
 import { useOverLayActions } from "@/store/overlay-store";
 import { usePlayersActions } from "@/store/players-store";
 import { useModalActions } from "@/store/show-modal-store";
@@ -18,7 +18,6 @@ import MafiaModals from "@/components/mafia/MafiaModals";
 import MafiaToolTip from "@/components/mafia/MafiaToolTip";
 import RemoteParticipant from "@/components/mafia/RemoteParticipant";
 import { useMediaRoom } from "@/components/mafia/MediaRoom";
-import { getRankingScore, setRankingScore } from "@/utils/supabase/rankingAPI";
 
 const MafiaPlayRooms = () => {
   //NOTE - WebRTC room 정보
@@ -26,7 +25,6 @@ const MafiaPlayRooms = () => {
 
   //NOTE - global state
   const isGameState = useGameState();
-  const victoryPlayers = useVictoryPlayers();
   const { setPresentRoomId, setChiefPlayerId, setDiedPlayer, setIsGameState, setGameReset } = useGameActions();
   const { setReadyPlayers, setOverlayReset } = useOverLayActions();
   const { setPlayers, setPlayersReset } = usePlayersActions();
@@ -93,30 +91,13 @@ const MafiaPlayRooms = () => {
   };
   useSocketOn(sockets);
 
-  //NOTE - 게임 종료 및 Ranking 점수 산정
+  //NOTE - 게임 종료 시 UI 초기화 (랭킹 점수는 서버가 갱신)
   useEffect(() => {
-    const updateVictoryRanking = async () => {
-      try {
-        const { mafia_score, music_score } = await getRankingScore(userId);
-        const isVictoryPlayer = victoryPlayers.find((playerId) => playerId === userId);
-
-        const newScore = isVictoryPlayer ? 100 : 20;
-        const newMafia_score = mafia_score + newScore;
-        const newMusic_score = music_score;
-        const total_score = newMafia_score + newMusic_score;
-
-        await setRankingScore(userId, newMafia_score, newMusic_score, total_score);
-      } catch (error) {
-      } finally {
-        setOverlayReset(); //Local,Remote 클릭 이벤트 및 캠 이미지 초기화
-        setModalReset(); //전체 모달 요소 초기화
-        setGameReset(); // 죽은 players 및 게임 state 초기화
-        setIsMediaReset(true); // 캠 및 오디오 초기화
-      }
-    };
-
     if (isGameState === "gameEnd") {
-      updateVictoryRanking();
+      setOverlayReset(); //Local,Remote 클릭 이벤트 및 캠 이미지 초기화
+      setModalReset(); //전체 모달 요소 초기화
+      setGameReset(); // 죽은 players 및 게임 state 초기화
+      setIsMediaReset(true); // 캠 및 오디오 초기화
     }
   }, [isGameState]);
 

@@ -1,6 +1,7 @@
 import { Namespace, Socket } from "socket.io";
 import { DefaultEventsMap } from "socket.io/dist/typed-events";
-import { getRoomInfo, setRoomIsPlaying } from "../api/supabase/roomAPI";
+import { getChief, getRoomInfo, setRoomIsPlaying } from "../api/supabase/roomAPI";
+import { isGameActive, registerGame, reserveGame, unregisterGame } from "../api/socket/gameRegistry";
 import {
   gameOver,
   getMostVotedPlayer,
@@ -33,6 +34,27 @@ export const onGameStart = async (
 ) => {
   socket.on("gameStart", async (roomId, playersMaxCount) => {
     console.log(`[gameStart] roomId : ${roomId}, 총 인원 : ${playersMaxCount}`);
+
+    //NOTE - 중복 실행 방지: 이미 이 방의 게임 루프가 돌고 있으면 무시
+    if (isGameActive(roomId)) {
+      return;
+    }
+    reserveGame(roomId);
+
+    //NOTE - 방장 검증: 방장이 아닌 소켓의 게임 시작 요청 거부
+    try {
+      const chief = await getChief(roomId);
+      if (socket.data.userId !== chief) {
+        unregisterGame(roomId);
+        socket.emit("gameStartError", "방장만 게임을 시작할 수 있습니다.");
+        return;
+      }
+    } catch (error) {
+      unregisterGame(roomId);
+      socket.emit("gameStartError", (error as Error).message);
+      return;
+    }
+
     mafiaIo.to(roomId).emit("gameStart");
 
     const roundStatus: RoundStatus = { INIT: "init", GAME_END: "gameEnd" };
@@ -108,6 +130,7 @@ export const onGameStart = async (
               .to(roomId)
               .emit("playError", roundName, (error as Error).message);
             clearInterval(start);
+            unregisterGame(roomId);
           }
         }
 
@@ -899,5 +922,7 @@ export const onGameStart = async (
         }
       }
     }, 1000);
+
+    registerGame(roomId, start);
   });
 };

@@ -19,6 +19,8 @@ import {
   getUserCountInRoom,
   setRoomIsPlaying,
 } from "../supabase/roomAPI";
+import { applyGameScores } from "../supabase/rankingAPI";
+import { unregisterGame } from "./gameRegistry";
 
 export const canGameStart = async (
   roomId: string,
@@ -172,6 +174,7 @@ export const playError = async (
   if (start) {
     clearInterval(start);
   }
+  unregisterGame(roomId);
 };
 
 export const gameOver = async (
@@ -202,6 +205,13 @@ export const gameOver = async (
     }
     roundName = roundStatus.GAME_END;
 
+    //NOTE - 랭킹 점수는 서버가 일괄 갱신 (클라이언트 조작 차단)
+    try {
+      await applyGameScores(allPlayers, gameResult.result!);
+    } catch (error) {
+      console.log(`[applyGameScoresError] ${(error as Error).message}`);
+    }
+
     await initGame(roomId);
     await setRoomIsPlaying(roomId, false);
 
@@ -209,6 +219,7 @@ export const gameOver = async (
     mafiaIo.emit("updateRoomInfo", roomInfo);
 
     clearInterval(start);
+    unregisterGame(roomId);
   }
   return roundName;
 };
