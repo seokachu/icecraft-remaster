@@ -29,6 +29,16 @@ npm install
 npm run dev
 ```
 
+## Supabase 새 프로젝트 세팅
+
+기존 팀 프로젝트의 Supabase는 접속 불가 상태라 새 프로젝트가 필요합니다.
+
+1. [supabase.com](https://supabase.com)에서 새 프로젝트 생성
+2. SQL Editor에서 `supabase/schema.sql` 전체 실행 (테이블 3개 생성)
+3. Authentication > Providers에서 이메일 로그인 확인, 필요 시 소셜 로그인(Kakao/Google/GitHub/Facebook) 설정 — 각 플랫폼의 OAuth 앱 키가 필요합니다
+4. Authentication > URL Configuration에서 Site URL을 배포 도메인으로 설정
+5. Settings > API의 URL과 anon key를 프론트/백엔드 환경변수에 입력
+
 ## 배포 (무료 티어)
 
 | 대상 | 플랫폼 | 방법 |

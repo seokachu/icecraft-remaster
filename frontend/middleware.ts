@@ -5,8 +5,10 @@ import { NextResponse, type NextRequest } from "next/server";
 export async function middleware(request: NextRequest) {
   await updateSession(request);
 
-  const loginCookie = request.cookies.get("sb-ktfrmyssyzqmoljohixh-auth-token");
-  const socialCookie = request.cookies.get("sb-ktfrmyssyzqmoljohixh-auth-token0");
+  // 쿠키 이름의 프로젝트 ref를 env에서 유도 (Supabase 프로젝트 교체 시에도 동작)
+  const projectRef = new URL(process.env.NEXT_PUBLIC_SUPABASE_URL!).hostname.split(".")[0];
+  const loginCookie = request.cookies.get(`sb-${projectRef}-auth-token`);
+  const socialCookie = request.cookies.get(`sb-${projectRef}-auth-token0`);
   const url = request.nextUrl.pathname;
 
   if (url == "/login" && (loginCookie || socialCookie)) {

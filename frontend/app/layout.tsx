@@ -20,14 +20,14 @@ export const metadata: Metadata = {
     description: "into stunning space! 놀라운 공간 속으로!",
     images: [
       {
-        url: "https://ktfrmyssyzqmoljohixh.supabase.co/storage/v1/object/public/images/open_%20graph.jpg",
-        width: 1200,
-        height: 630,
+        url: "/og-image.jpg",
+        width: 1920,
+        height: 818,
         alt: "IceCraft"
       }
     ],
 
-    url: "https://www.icecraft.co.kr",
+    url: "/",
     siteName: "IceCraft",
     locale: "ko_KR",
     type: "website"
