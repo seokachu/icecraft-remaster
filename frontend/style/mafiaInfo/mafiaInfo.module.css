@@ -1,0 +1,195 @@
+.infoWrapper {
+  padding: 50px 30px 0;
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+.ruleList h2 {
+  position: sticky;
+  top: 60px;
+  left: 20px;
+  font-size: 32px;
+  font-weight: var(--font-bold);
+  text-shadow: 2px 1px 3px rgba(255, 255, 255, 0.7);
+}
+
+.ruleList .ruleListContent {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 62px 0 108px;
+}
+
+.ruleList .ruleListContent > div {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.ruleList .ruleListContent p {
+  text-align: center;
+  font-size: var(--font-size-title);
+  font-weight: var(--font-bold);
+  line-height: 42px;
+}
+
+.ruleList .ruleListContent p:first-of-type {
+  margin-top: 50px;
+}
+
+.infoWrapper span {
+  color: var(--primary-color);
+  font-weight: var(--font-bold);
+}
+
+.ruleListContent img {
+  width: 100%;
+}
+
+.victory,
+.rolesCardImage,
+.mafiaTimeImage {
+  display: flex;
+  align-items: center;
+  margin-top: 15px;
+  gap: 10px;
+}
+
+.mafiaTimeImage > img,
+.rolesCardImage > img {
+  width: 200px;
+}
+
+.mafiaGameImage > img,
+.victory > img,
+.morningModal > img,
+.finalImage > img,
+.voteImage > img {
+  border: 1px solid var(--silver-gray);
+  border-radius: 16px;
+  margin-top: 20px;
+}
+
+.choosingImage > img {
+  margin-top: 20px;
+  width: 500px;
+}
+
+.victory > img {
+  width: 500px;
+  margin-top: 0;
+}
+
+.mafiaGameImage > img {
+  width: 300px;
+}
+
+/*---------------- Framer Motion --------------*/
+.progressBar {
+  position: fixed;
+  top: 0px;
+  left: 0;
+  right: 0;
+  height: 10px;
+  background-color: var(--primary-color);
+  transform-origin: 0%;
+  z-index: 1;
+}
+
+.infoTitle {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  overflow: hidden;
+  background-color: var(--header-background-color);
+}
+
+.parallax {
+  letter-spacing: -2px;
+  line-height: 0.8;
+  margin: 0;
+  white-space: nowrap;
+  display: flex;
+  flex-wrap: nowrap;
+  color: var(--white);
+}
+
+.parallax .scroller {
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 64px;
+  display: flex;
+  white-space: nowrap;
+  display: flex;
+  flex-wrap: nowrap;
+}
+
+.parallax span {
+  display: block;
+  margin-right: 30px;
+}
+
+/*---------------- Responsive --------------*/
+@media (max-width: 1120px) {
+  .victory > img {
+    width: 400px;
+  }
+}
+
+@media (max-width: 900px) {
+  .victory,
+  .rolesCardImage,
+  .mafiaTimeImage {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .victory > img {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .infoWrapper {
+    padding: 108px 20px;
+  }
+
+  .progressBar {
+    top: 69px;
+  }
+
+  .ruleList h2 {
+    top: 100px;
+    font-size: var(--font-size-modal-title);
+    transition: 0.3s ease-out;
+  }
+
+  .ruleList .ruleListContent {
+    padding: 32px 0 108px;
+  }
+
+  .ruleList .ruleListContent p {
+    font-size: var(--font-size-modal-content);
+    transition: 0.3s ease-out;
+    line-height: 28px;
+  }
+
+  .ruleList .ruleListContent p:first-of-type {
+    margin-top: 30px;
+  }
+
+  .parallax .scroller {
+    font-size: 32px;
+    transition: 0.3s ease-out;
+  }
+
+  .progressBar {
+    height: 5px;
+    transition: 0.3s ease-out;
+  }
+}

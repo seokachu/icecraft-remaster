@@ -1,0 +1,118 @@
+/*-------------- INTRO HEADER --------------*/
+.introWrapper {
+  position: relative;
+}
+
+.introWrapper header {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  position: relative;
+}
+
+.introWrapper header a {
+  position: absolute;
+  left: 30px;
+  top: 21px;
+  z-index: 2;
+}
+
+/*-------------- INTRO --------------*/
+.section {
+  position: relative;
+  max-width: 100%;
+  height: 100vh;
+}
+
+.IntroImage {
+  position: absolute;
+  height: 100vh;
+  width: 100%;
+  object-fit: cover;
+}
+
+.video {
+  width: 100%;
+  height: 100vh;
+  object-fit: cover;
+  position: absolute;
+}
+
+.introTitle {
+  position: absolute;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100vh;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.h1 {
+  color: var(--white);
+  font-size: 60px;
+  font-weight: var(--font-bold);
+  margin-bottom: 104px;
+  min-height: 90px;
+}
+
+.introTitle > a {
+  width: 454px;
+  height: 68px;
+  border-radius: var(--border-radius);
+  text-align: center;
+  line-height: 68px;
+  text-transform: uppercase;
+  font-weight: var(--font-bold);
+  font-size: 20px;
+}
+
+.mainButton {
+  background-color: var(--primary-color);
+  color: var(--white);
+}
+
+.loginButton {
+  background-color: var(--white);
+  color: var(--text-black);
+}
+
+.signUpButton {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  color: var(--white);
+}
+
+.signUpButton a {
+  text-decoration: underline;
+  font-size: var(--font-size-small);
+}
+
+/*---------------- Responsive --------------*/
+@media (max-width: 850px) {
+  .h1 {
+    margin-bottom: 24px;
+    font-size: 32px;
+    text-align: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .introWrapper header img {
+    width: 100px;
+    transition: 0.3s ease-out;
+  }
+
+  .introTitle {
+    transform: scale(0.8);
+    transition: 0.3s ease-out;
+  }
+}
+
+@media (max-width: 520px) {
+  .introTitle > a {
+    width: 100%;
+  }
+}
