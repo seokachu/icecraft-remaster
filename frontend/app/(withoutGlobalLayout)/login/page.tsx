@@ -8,8 +8,6 @@ import Link from "next/link";
 import Image from "next/image";
 import KakaoLoginIcon from "@/assets/images/join_kakaotalk.svg";
 import GoogleLoginIcon from "@/assets/images/join_google.svg";
-import GithubLoginIcon from "@/assets/images/join_github.svg";
-import FacebookLoginIcon from "@/assets/images/join_facebook.svg";
 import Logo from "@/assets/images/logo.svg";
 import ErrorMessage from "@/components/logIn/ErrorMessage";
 import { useCookies } from "react-cookie";
@@ -71,22 +69,6 @@ const LogIn = () => {
       await oAuthLogIn("google");
     } catch (error) {
       setErrorMessage(["구글 계정을 통한 로그인에 실패했습니다."]);
-    }
-  };
-
-  const githubLogIn = async () => {
-    try {
-      await oAuthLogIn("github");
-    } catch (error) {
-      setErrorMessage(["깃허브 계정을 통한 로그인에 실패했습니다."]);
-    }
-  };
-
-  const facebookLogIn = async () => {
-    try {
-      await oAuthLogIn("facebook");
-    } catch (error) {
-      setErrorMessage(["페이스북 계정을 통한 로그인에 실패했습니다."]);
     }
   };
 
@@ -162,16 +144,6 @@ const LogIn = () => {
               <li>
                 <button type="button" onClick={googleLogIn}>
                   <Image src={GoogleLoginIcon} alt="구글 로그인" />
-                </button>
-              </li>
-              <li>
-                <button type="button" onClick={githubLogIn}>
-                  <Image src={GithubLoginIcon} alt="깃허브 로그인" />
-                </button>
-              </li>
-              <li>
-                <button type="button" onClick={facebookLogIn}>
-                  <Image src={FacebookLoginIcon} alt="페이스북 로그인" />
                 </button>
               </li>
             </ul>

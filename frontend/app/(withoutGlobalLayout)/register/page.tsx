@@ -6,8 +6,6 @@ import { InputMessage } from "@/components/register/InputMessage";
 import { oAuthLogIn, oAuthRegister } from "@/utils/supabase/authAPI";
 import KakaoLoginIcon from "@/assets/images/join_kakaotalk.svg";
 import GoogleLoginIcon from "@/assets/images/join_google.svg";
-import GithubLoginIcon from "@/assets/images/join_github.svg";
-import FacebookLoginIcon from "@/assets/images/join_facebook.svg";
 import Logo from "@/assets/images/logo.svg";
 import Image from "next/image";
 import S from "@/style/register/register.module.css";
@@ -124,18 +122,9 @@ const Register = () => {
       return;
     }
 
-    if (inputPassword.length < 6 || 12 < inputPassword.length) {
+    if (inputPassword.length < 6 || 20 < inputPassword.length) {
       isPassed.current = { ...isPassed.current, password: false };
-      setPasswordMessage("비밀번호의 길이가 올바르지 않습니다.");
-      return;
-    }
-
-    let passwordPattern = new RegExp(/(?=.*[a-z])(?=.*[A-Z])/);
-    const isContained = passwordPattern.test(inputPassword);
-
-    if (!isContained) {
-      isPassed.current = { ...isPassed.current, password: false };
-      setPasswordMessage("비밀번호에 대문자와 소문자가 포함되어 있지 않습니다.");
+      setPasswordMessage("비밀번호는 6~20자로 입력해주세요.");
       return;
     }
 
@@ -212,22 +201,6 @@ const Register = () => {
     }
   };
 
-  const githubLogIn = async () => {
-    try {
-      await oAuthLogIn("github");
-    } catch (error) {
-      setRegisterMessage("깃허브 계정을 통한 간편 가입에 실패했습니다.");
-    }
-  };
-
-  const facebookLogIn = async () => {
-    try {
-      await oAuthLogIn("facebook");
-    } catch (error) {
-      setRegisterMessage("페이스북 계정을 통한 간편 가입에 실패했습니다.");
-    }
-  };
-
   useEffect(() => {
     const isEmailPassed = isPassed.current.email;
     const isNicknamePassed = isPassed.current.nickname;
@@ -284,8 +257,8 @@ const Register = () => {
               <input
                 type="password"
                 id="password"
-                maxLength={12}
-                placeholder="비밀번호를 입력해주세요."
+                maxLength={20}
+                placeholder="비밀번호를 입력해주세요. (6~20자)"
                 autoComplete="off"
                 value={password}
                 onChange={(e) => passwordChangeHandler(e.target.value)}
@@ -322,16 +295,6 @@ const Register = () => {
               <li>
                 <button type="button" onClick={googleLogIn}>
                   <Image src={GoogleLoginIcon} alt="구글 로그인" />
-                </button>
-              </li>
-              <li>
-                <button type="button" onClick={githubLogIn}>
-                  <Image src={GithubLoginIcon} alt="깃허브 로그인" />
-                </button>
-              </li>
-              <li>
-                <button type="button" onClick={facebookLogIn}>
-                  <Image src={FacebookLoginIcon} alt="페이스북 로그인" />
                 </button>
               </li>
             </ul>
