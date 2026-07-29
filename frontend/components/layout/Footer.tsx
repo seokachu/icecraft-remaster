@@ -14,7 +14,7 @@ const Footer = () => {
           <p>copyright &copy;2024 by IceCraft Team. all rights reserved.</p>
           <Link href="/inquiry">버그 제보 및 문의사항 바로가기</Link>
         </address>
-        <Link href="https://github.com/TeamSparta-Project/ice-craft" target="_blank" rel="noopener noreferrer">
+        <Link href="https://github.com/seokachu/icecraft-remaster" target="_blank" rel="noopener noreferrer">
           <Image src={GithubIcon} alt="github logo" />
         </Link>
       </footer>
