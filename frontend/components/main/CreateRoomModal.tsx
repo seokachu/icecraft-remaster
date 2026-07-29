@@ -12,12 +12,13 @@ import { socket } from "@/utils/socket/socket";
 import Image from "next/image";
 import { FormEvent, useRef, useState } from "react";
 import { toast } from "react-toastify";
+import { MIN_PLAYERS, MAX_PLAYERS } from "@shared/constants";
 
 const CreateRoomModal = ({ setIsCreate, closeModal }: CreateRoomModalProps) => {
   const isGoInClick = useRef(false);
   const [roomTitle, setRoomTitle] = useState("");
   const [selectedGame, setSelectedGame] = useState("마피아");
-  const [numberOfPlayers, setNumberOfPlayers] = useState(5);
+  const [numberOfPlayers, setNumberOfPlayers] = useState(MIN_PLAYERS);
 
   const userId = useUserId();
   const nickname = useNickname();
@@ -60,7 +61,7 @@ const CreateRoomModal = ({ setIsCreate, closeModal }: CreateRoomModalProps) => {
         socket.emit("createRoom", roomTitle, selectedGame, numberOfPlayers);
         setSelectedGame("마피아");
         setRoomTitle("");
-        setNumberOfPlayers(5);
+        setNumberOfPlayers(MIN_PLAYERS);
         return;
       }
       if (!isGoInClick.current && selectedGame === "노래맞추기") {
@@ -70,8 +71,11 @@ const CreateRoomModal = ({ setIsCreate, closeModal }: CreateRoomModalProps) => {
     } catch (error) {}
   };
 
-  // WebRTC mesh 구조상 인원 상한 6명 (5~6인)
-  const playerOptions = Array.from({ length: 2 }, (_, i) => i + 5);
+  // WebRTC mesh 구조상 인원 상한 6명 (3~6인)
+  const playerOptions = Array.from(
+    { length: MAX_PLAYERS - MIN_PLAYERS + 1 },
+    (_, i) => i + MIN_PLAYERS
+  );
 
   return (
     <div className={S.modalWrap} onClick={closeModal}>

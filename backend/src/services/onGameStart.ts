@@ -1,6 +1,7 @@
 import { Namespace, Socket } from "socket.io";
 import { ClientToServerEvents, ServerToClientEvents } from "../../../shared/socket-events";
-import { getChief, getRoomInfo, setRoomIsPlaying } from "../api/supabase/roomAPI";
+import { getChief, getRoomInfo, getUserCountInRoom, setRoomIsPlaying } from "../api/supabase/roomAPI";
+import { MIN_PLAYERS, MAX_PLAYERS } from "../../../shared/constants";
 import { isGameActive, registerGame, reserveGame, unregisterGame } from "../api/socket/gameRegistry";
 import {
   gameOver,
@@ -32,8 +33,8 @@ export const onGameStart = async (
   socket: Socket<ClientToServerEvents, ServerToClientEvents>,
   mafiaIo: Namespace<ClientToServerEvents, ServerToClientEvents>
 ) => {
-  socket.on("gameStart", async (roomId, playersMaxCount) => {
-    console.log(`[gameStart] roomId : ${roomId}, 총 인원 : ${playersMaxCount}`);
+  socket.on("gameStart", async (roomId) => {
+    console.log(`[gameStart] roomId : ${roomId}`);
 
     //NOTE - 중복 실행 방지: 이미 이 방의 게임 루프가 돌고 있으면 무시
     if (isGameActive(roomId)) {
@@ -49,6 +50,27 @@ export const onGameStart = async (
         socket.emit("gameStartError", "방장만 게임을 시작할 수 있습니다.");
         return;
       }
+    } catch (error) {
+      unregisterGame(roomId);
+      socket.emit("gameStartError", (error as Error).message);
+      return;
+    }
+
+    //NOTE - 인원 검증: 클라이언트가 보낸 값 대신 DB 기준으로 직접 확인
+    let playersMaxCount: number;
+    try {
+      const { total_user_count } = await getUserCountInRoom(roomId);
+      const playersInRoom = await getPlayersInRoom(roomId);
+      if (
+        total_user_count < MIN_PLAYERS ||
+        total_user_count > MAX_PLAYERS ||
+        playersInRoom.length !== total_user_count
+      ) {
+        unregisterGame(roomId);
+        socket.emit("gameStartError", "인원이 모두 모여야 게임을 시작할 수 있습니다.");
+        return;
+      }
+      playersMaxCount = playersInRoom.length;
     } catch (error) {
       unregisterGame(roomId);
       socket.emit("gameStartError", (error as Error).message);
@@ -202,7 +224,10 @@ export const onGameStart = async (
 
             if (policeMaxCount !== 0) {
               console.log("경찰 역할 배정");
-              await setPlayerRole(playersUserId[mafiaMaxCount + 1], "경찰");
+              await setPlayerRole(
+                playersUserId[mafiaMaxCount + doctorMaxCount],
+                "경찰"
+              );
             }
 
             allPlayers = await getPlayersInRoom(roomId);

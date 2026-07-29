@@ -33,7 +33,7 @@ export interface MediaStatus {
   [userId: string]: { camera: boolean; mike: boolean };
 }
 
-// 5인 게임에서는 doctor/police가 null
+// 3인 게임은 doctor/police, 4인 게임은 doctor가 null
 export interface PlayerRoles {
   [job: string]: string[] | null;
 }
@@ -76,7 +76,7 @@ export interface ClientToServerEvents {
   fastJoinRoom: (userId: string, nickname: string) => void;
   exitRoom: (roomId: string, userId: string) => void;
   setReady: (userId: string, isReady: boolean) => void;
-  gameStart: (roomId: string, playersMaxCount: number) => void;
+  gameStart: (roomId: string) => void; // 인원수는 서버가 DB에서 직접 확인 (클라이언트 값 신뢰 안 함)
   usersInfo: (roomId: string) => void;
   updateRoomInfo: (roomId: string) => void;
   voteTo: (votedPlayerId: string) => void;

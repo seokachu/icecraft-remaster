@@ -3,11 +3,9 @@ import { socket } from "@/utils/socket/socket";
 import { useEffect, useState } from "react";
 import S from "@/style/livekit/livekit.module.css";
 import { useMediaRoom } from "@/components/mafia/MediaRoom";
-import { useRoomPlayers } from "@/store/players-store";
 
 const GameStartButton = ({ isGameState }: { isGameState: string }) => {
   const { roomId, userId } = useMediaRoom();
-  const players = useRoomPlayers();
   const [isReady, setIsReady] = useState(false);
   const [isAllReady, setIsAllReady] = useState(false);
 
@@ -39,10 +37,9 @@ const GameStartButton = ({ isGameState }: { isGameState: string }) => {
     socket.emit("setReady", userId, newIsReady);
   };
 
-  //NOTE - 게임 시작 이벤트 핸들러
+  //NOTE - 게임 시작 이벤트 핸들러 (인원수는 서버가 DB 기준으로 검증)
   const startHandler = () => {
-    const playersCount = players.length;
-    socket.emit("gameStart", roomId, playersCount);
+    socket.emit("gameStart", roomId);
   };
 
   return (

@@ -145,13 +145,17 @@ export const whoWins = (allPlayers: AllPlayer[]) => {
   return { isValid: false };
 };
 
-// WebRTC mesh 구조상 인원 상한 6명 (5~6인만 지원)
+// 3~6인 지원 (WebRTC mesh 구조상 인원 상한 6명), 반환 순서: [마피아, 경찰, 의사]
 export const getRoleMaxCount = (totalCount: number) => {
   switch (totalCount) {
-    case 5:
+    case 3:
       return [1, 0, 0];
+    case 4:
+      return [1, 1, 0];
+    case 5:
+      return [1, 1, 1];
     case 6:
-      return [2, 1, 0];
+      return [2, 1, 1];
   }
   return [0, 0, 0];
 };
