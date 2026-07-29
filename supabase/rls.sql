@@ -1,5 +1,6 @@
 -- ============================================================
--- IceCraft 보안 설정 (RLS + 계정 자동 생성 트리거)
+-- IceCraft 보안 설정 (RLS)
+-- 계정 자동 생성 트리거는 trigger.sql로 분리됨 (먼저 실행해도 안전)
 --
 -- ⚠️ 실행 순서 주의:
 --   반드시 백엔드(Render)에 SUPABASE_SERVICE_ROLE_KEY 환경변수를
@@ -8,38 +9,7 @@
 -- ============================================================
 
 -- ------------------------------------------------------------
--- 1. 회원가입 시 account_table 자동 생성 트리거
---    (이메일 가입·소셜 로그인 모두 커버, FE의 직접 insert 제거)
--- ------------------------------------------------------------
-create or replace function public.handle_new_user()
-returns trigger
-language plpgsql
-security definer
-set search_path = public
-as $$
-begin
-  insert into public.account_table (user_id, email, nickname)
-  values (
-    new.id,
-    coalesce(new.email, ''),
-    coalesce(
-      new.raw_user_meta_data ->> 'nickname',
-      new.raw_user_meta_data ->> 'name',
-      split_part(coalesce(new.email, '익명'), '@', 1)
-    )
-  )
-  on conflict (user_id) do nothing;
-  return new;
-end;
-$$;
-
-drop trigger if exists on_auth_user_created on auth.users;
-create trigger on_auth_user_created
-  after insert on auth.users
-  for each row execute procedure public.handle_new_user();
-
--- ------------------------------------------------------------
--- 2. RLS 활성화
+-- 1. RLS 활성화
 --    쓰기는 전부 차단 (백엔드가 service_role로만 수행, RLS 우회)
 -- ------------------------------------------------------------
 alter table public.account_table enable row level security;
@@ -61,7 +31,7 @@ create policy "match_read" on public.room_user_match_table
 -- → 점수 조작, 역할 조작, 방 정보 조작 불가
 
 -- ------------------------------------------------------------
--- 3. 컬럼 단위 차단: 마피아 정체 은닉 (핵심)
+-- 2. 컬럼 단위 차단: 마피아 정체 은닉 (핵심)
 --    room_user_match_table에서 클라이언트가 읽을 수 있는 컬럼을
 --    명단 표시에 필요한 것만으로 제한. role·투표 관련 컬럼은
 --    service_role(백엔드)만 읽을 수 있다.
