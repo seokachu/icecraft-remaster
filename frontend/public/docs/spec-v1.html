@@ -41,7 +41,7 @@
         <li><a href="#s2">기술 스택</a></li>
         <li><a href="#s3">화면 구성 및 사용자 흐름</a></li>
         <li><a href="#s4">기능 명세</a></li>
-        <li><a href="#s5">게임 진행 규칙 (5~6인)</a></li>
+        <li><a href="#s5">게임 진행 규칙 (5~10인)</a></li>
         <li><a href="#s6">데이터 명세</a></li>
         <li><a href="#s7">알려진 한계 및 리마스터(v2) 방향</a></li>
         <li><a href="#s8">개정 이력</a></li>
@@ -138,7 +138,7 @@
           <h4><code class="fr-id">FR-201</code> 방 목록 · 검색 · 생성 · 입장</h4>
           <ul>
             <li>방 목록 실시간 갱신, 제목 검색(500ms 디바운스), 빠른입장을 제공합니다.</li>
-            <li>방 생성 시 제목(최대 16자)과 인원수를 설정합니다. <strong>지원 인원은 5~6명</strong>입니다.</li>
+            <li>방 생성 시 제목(최대 16자)과 인원수를 설정합니다. <strong>지원 인원은 5~10명</strong>입니다.</li>
             <li>게임 중(<code>is_playing</code>)인 방은 입장을 차단합니다.</li>
             <li>방장은 입장 시각(<code>join_time</code>)이 가장 빠른 유저로 자동 지정 · 위임됩니다.</li>
           </ul>
@@ -190,7 +190,7 @@
       </section>
 
       <section id="s5">
-        <h2><span class="no">5.</span>게임 진행 규칙 (5~6인)</h2>
+        <h2><span class="no">5.</span>게임 진행 규칙 (5~10인)</h2>
         <h3>5.1 역할 분배</h3>
         <div class="tablewrap">
           <table>
@@ -200,12 +200,16 @@
             <tbody>
               <tr><td class="num">5명</td><td class="num">1</td><td class="num">0</td><td class="num">0</td><td class="num">4</td></tr>
               <tr><td class="num">6명</td><td class="num">2</td><td class="num">1</td><td class="num">0</td><td class="num">3</td></tr>
+              <tr><td class="num">7명</td><td class="num">2</td><td class="num">1</td><td class="num">0</td><td class="num">4</td></tr>
+              <tr><td class="num">8명</td><td class="num">3</td><td class="num">1</td><td class="num">1</td><td class="num">3</td></tr>
+              <tr><td class="num">9명</td><td class="num">3</td><td class="num">1</td><td class="num">1</td><td class="num">4</td></tr>
+              <tr><td class="num">10명</td><td class="num">3</td><td class="num">1</td><td class="num">1</td><td class="num">5</td></tr>
             </tbody>
           </table>
         </div>
         <div class="note">
-          <strong>참고:</strong> 의사 역할은 코드와 게임 룰 문서에 존재하지만, 5~6인 분배표에서 배정 인원이 0명이라
-          실제 게임에는 등장하지 않습니다. 경찰도 6인 게임에서만 등장합니다.
+          <strong>참고:</strong> 경찰은 6인 이상, 의사는 8인 이상 게임에서만 배정됩니다.
+          5인 게임은 마피아 1명 외 전원 시민으로 진행됩니다.
         </div>
         <h3>5.2 승리 조건</h3>
         <ul>
@@ -248,8 +252,8 @@
                 <td>순수 WebRTC P2P mesh로 전환 (외부 미디어 서버 제거)</td>
               </tr>
               <tr>
-                <td>5~6인만 지원, 의사 역할 미배정</td>
-                <td>3~6인 지원 · 인원별 역할 분배 개편 (의사 · 경찰 정식 등장)</td>
+                <td>최소 5인 필요 — 소인원 게임 불가, 의사는 8인 이상에서만 배정</td>
+                <td>3~6인 지원 · 인원별 역할 분배 개편 (5인부터 의사 등장)</td>
               </tr>
               <tr>
                 <td>RLS 부재 — 클라이언트가 계정 생성 · 점수 갱신 · role 조회 가능</td>
