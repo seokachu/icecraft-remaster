@@ -1,15 +1,20 @@
 # IceCraft Remaster
 
-실시간 화상채팅 기반 마피아 게임. 2024년 4인 팀 프로젝트 [IceCraft](https://github.com/orgs/ice-craft/repositories)를 개인 프로젝트로 재구축하는 저장소입니다.
+실시간 화상채팅 기반 마피아 게임. 2024년 4인 팀 프로젝트 [IceCraft](https://github.com/orgs/ice-craft/repositories)를 개인 프로젝트로 재구축한 저장소입니다.
 
-원본 코드 스냅샷에서 새로 시작해 구조 개선 · 보안 강화 · 무료 인프라 이전(Vercel + Render + Supabase)을 진행합니다. 화상채팅은 LiveKit에서 순수 WebRTC P2P mesh(최대 6인)로 전환했습니다.
+원본 코드 스냅샷에서 새로 시작해 구조 개선 · 보안 강화 · 무료 인프라 이전(Vercel + Render + Supabase)을 진행했습니다. 화상채팅은 LiveKit에서 순수 WebRTC P2P mesh(최대 6인)로 전환했습니다.
+
+- **서비스**: <https://icecraft-remaster.vercel.app>
+- **기능명세서**: <https://icecraft-remaster.vercel.app/docs> — 팀 원본(v1) → 리마스터(v2) 버전별 명세 아카이브
 
 ## 구조
 
 | 디렉토리 | 내용 |
 |---|---|
-| `frontend/` | Next.js (App Router) · TypeScript · WebRTC (P2P mesh) · Socket.IO client · Supabase · Zustand · Tailwind CSS |
-| `backend/` | Express · Socket.IO 게임 서버 · TypeScript · Supabase |
+| `frontend/` | Next.js (App Router) · TypeScript · WebRTC (P2P mesh) · Socket.IO client · Supabase · Zustand |
+| `backend/` | Express · Socket.IO 게임 서버 (사회자 · 심판 역할) · TypeScript · Supabase |
+| `shared/` | FE-BE 공유 타입 — 소켓 이벤트 맵 · 게임 인원 상수 |
+| `supabase/` | `schema.sql` (테이블 3개) · `security.sql` (RLS · 계정 트리거 · 컬럼 차단) |
 
 각 디렉토리의 README에 원본 프로젝트의 상세 문서가 있습니다.
 
@@ -35,16 +40,16 @@ npm run dev
 
 1. [supabase.com](https://supabase.com)에서 새 프로젝트 생성
 2. SQL Editor에서 `supabase/schema.sql` 전체 실행 (테이블 3개 생성)
-3. Authentication > Providers에서 이메일 로그인 확인, 필요 시 소셜 로그인(Kakao/Google/GitHub/Facebook) 설정 — 각 플랫폼의 OAuth 앱 키가 필요합니다
+3. Authentication > Providers에서 이메일 로그인 확인, 필요 시 소셜 로그인(Kakao / Google) 설정 — 각 플랫폼의 OAuth 앱 키가 필요합니다
 4. Authentication > URL Configuration에서 Site URL을 배포 도메인으로 설정
 5. Settings > API의 URL과 anon key를 프론트/백엔드 환경변수에 입력
 
 ## 보안 설정 (RLS)
 
-`supabase/rls.sql`이 RLS·계정 자동 생성 트리거·컬럼 차단(마피아 role 은닉)을 설정합니다. **반드시 이 순서로 적용하세요:**
+`supabase/security.sql`이 RLS · 계정 자동 생성 트리거 · 컬럼 차단(마피아 role 은닉)을 설정합니다. 멱등 스크립트라 재실행해도 안전합니다. **반드시 이 순서로 적용하세요:**
 
 1. Render의 `icecraft-backend` 환경변수에 `SUPABASE_SERVICE_ROLE_KEY` 추가 (Supabase Settings > API의 service_role secret) → 재배포 완료 대기
-2. Supabase SQL Editor에서 `supabase/rls.sql` 전체 실행
+2. Supabase SQL Editor에서 `supabase/security.sql` 전체 실행
 
 순서를 지키지 않으면(BE가 anon key인 상태에서 RLS를 켜면) 게임 진행이 전부 막힙니다.
 
@@ -52,7 +57,7 @@ npm run dev
 
 | 대상 | 플랫폼 | 방법 |
 |---|---|---|
-| `backend/` | Render (free) | 루트의 `render.yaml` 블루프린트로 생성. 환경변수 `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `ALLOWED_ORIGINS` 설정 |
+| `backend/` | Render (free) | 루트의 `render.yaml` 블루프린트로 생성. 환경변수 `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `SUPABASE_ANON_KEY`, `ALLOWED_ORIGINS` 설정 |
 | `frontend/` | Vercel (hobby) | Root Directory를 `frontend`로 지정. `.env.example`의 변수들 설정 |
 
 Render 무료 티어는 15분 무접속 시 잠들며 첫 접속에 콜드스타트(~1분)가 있습니다.
