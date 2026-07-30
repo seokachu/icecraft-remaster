@@ -6,6 +6,54 @@
 
 - **서비스**: <https://icecraft-remaster.vercel.app>
 - **기능명세서**: <https://icecraft-remaster.vercel.app/docs> — 팀 원본(v1) → 리마스터(v2) 버전별 명세 아카이브
+- **세팅 · 배포 가이드**: [SETUP.md](SETUP.md)
+
+## 게임 소개
+
+참가자 전원이 캠과 마이크를 켠 채로 진행하는 화상 마피아 게임입니다. 서버가 사회자 역할을 맡아 밤낮 전환 · 타이머 · 캠/마이크 on/off · 투표 집계를 전부 자동으로 진행합니다.
+
+- **인원**: 3~6명 — 인원에 따라 마피아 1~2명, 경찰 · 의사가 배정됩니다 (3명 = 마1 / 4명 = 마1 · 경1 / 5명 = 마1 · 경1 · 의1 / 6명 = 마2 · 경1 · 의1)
+- **진행**: 직업 확인(밤) → 낮 토론 60초 → 캠 클릭으로 지목 투표 → 최후의 변론 · 찬반 투표 → 밤(마피아 제거 지목 · 의사 보호 · 경찰 조사) → 낮으로 반복
+- **승리**: 마피아가 전멸하면 시민 승, 생존 마피아 수가 생존 시민 이상이면 마피아 승
+- **점수**: 승리 팀 +100점 · 패배 팀 +20점, 누적 점수로 랭킹을 산정합니다
+
+## 주요 기능
+
+- **간편 로그인** — 이메일 가입과 카카오 · 구글 소셜 로그인 (Supabase Auth)
+- **로비** — 방 생성(3~6인) · 제목 검색 · 빠른입장, 방 목록 실시간 동기화
+- **서버 사회자** — 1초 tick 스테이트 머신이 게임 전 단계를 자동 진행하고, 시작 권한(방장) · 인원수를 서버가 검증합니다
+- **화상채팅** — 외부 미디어 서버 없는 순수 WebRTC P2P full mesh, 시그널링은 게임 소켓 서버가 겸임합니다
+- **역할별 미디어 제어** — 게임 단계에 따라 서버가 참가자별 캠 · 마이크를 강제 제어합니다 (밤에는 마피아끼리만 캠 ON 등)
+- **랭킹** — 게임 결과를 서버가 단독 갱신(점수 조작 차단), 동점 공동 순위 · 내 순위 고정 표시 · 페이지네이션
+- **부가** — 게임 방법 튜토리얼 페이지, 입장 전 캠 · 마이크 설정과 권한 트러블슈팅 안내, 문의 폼, 챗봇
+
+## 동작 방식
+
+```
+브라우저 ⇄ 브라우저        WebRTC P2P full mesh (영상 · 음성, 최대 6인)
+    ⇅
+게임 서버 (Express + Socket.IO · Render)     게임 진행 · 판정 · WebRTC 시그널링
+    ⇅  service_role (쓰기 전담)
+Supabase (Auth · Postgres · RLS)
+    ⇅  anon key (읽기 · 로그인)
+프론트엔드 (Next.js App Router · Vercel)
+```
+
+- 게임의 모든 판정(역할 배정 · 투표 집계 · 사망 처리 · 승패 · 점수)은 서버가 수행하고, 클라이언트는 표시와 입력만 담당합니다.
+- DB는 RLS로 클라이언트 쓰기를 전면 차단하며, 마피아 `role` 컬럼은 컬럼 단위 권한 회수로 클라이언트에서 조회 자체가 불가능합니다. 계정 행 생성도 DB 트리거가 처리합니다.
+- WebRTC는 STUN 기본 + TURN 선택 구성이며, 동시 offer 충돌(glare)은 userId 사전순 규칙으로 방지합니다.
+
+## 원본(v1)에서 달라진 점
+
+| | 팀 원본 (2024) | 리마스터 (현행) |
+|---|---|---|
+| 화상 | LiveKit Cloud (SFU) | 순수 WebRTC P2P mesh — 외부 미디어 서버 0대 |
+| 게임 인원 | 5~6인 (의사 미배정) | 3~6인, 인원별 역할 분배 개편 |
+| 보안 | 클라이언트가 계정 생성 · 점수 갱신 · role 조회 | RLS + 컬럼 차단 + 서버 단독 쓰기, 시작 권한 서버 검증 |
+| 소셜 로그인 | 카카오 · 구글 · 깃허브 · 페이스북 | 카카오 · 구글 |
+| 인프라 | 접속 불가된 팀 계정 | Vercel + Render + Supabase 전 구간 무료 티어 |
+
+상세한 변경 배경과 확정 결정은 [기능명세서 아카이브](https://icecraft-remaster.vercel.app/docs)에 기록되어 있습니다.
 
 ## 구조
 
@@ -17,47 +65,3 @@
 | `supabase/` | `schema.sql` (테이블 3개) · `security.sql` (RLS · 계정 트리거 · 컬럼 차단) |
 
 각 디렉토리의 README에 원본 프로젝트의 상세 문서가 있습니다.
-
-## 로컬 실행
-
-```bash
-# 백엔드 (http://localhost:4000)
-cd backend
-cp .env.example .env   # 값 채우기
-npm install
-npm run dev
-
-# 프론트엔드 (http://localhost:3000)
-cd frontend
-cp .env.example .env.local   # 값 채우기
-npm install
-npm run dev
-```
-
-## Supabase 새 프로젝트 세팅
-
-기존 팀 프로젝트의 Supabase는 접속 불가 상태라 새 프로젝트가 필요합니다.
-
-1. [supabase.com](https://supabase.com)에서 새 프로젝트 생성
-2. SQL Editor에서 `supabase/schema.sql` 전체 실행 (테이블 3개 생성)
-3. Authentication > Providers에서 이메일 로그인 확인, 필요 시 소셜 로그인(Kakao / Google) 설정 — 각 플랫폼의 OAuth 앱 키가 필요합니다
-4. Authentication > URL Configuration에서 Site URL을 배포 도메인으로 설정
-5. Settings > API의 URL과 anon key를 프론트/백엔드 환경변수에 입력
-
-## 보안 설정 (RLS)
-
-`supabase/security.sql`이 RLS · 계정 자동 생성 트리거 · 컬럼 차단(마피아 role 은닉)을 설정합니다. 멱등 스크립트라 재실행해도 안전합니다. **반드시 이 순서로 적용하세요:**
-
-1. Render의 `icecraft-backend` 환경변수에 `SUPABASE_SERVICE_ROLE_KEY` 추가 (Supabase Settings > API의 service_role secret) → 재배포 완료 대기
-2. Supabase SQL Editor에서 `supabase/security.sql` 전체 실행
-
-순서를 지키지 않으면(BE가 anon key인 상태에서 RLS를 켜면) 게임 진행이 전부 막힙니다.
-
-## 배포 (무료 티어)
-
-| 대상 | 플랫폼 | 방법 |
-|---|---|---|
-| `backend/` | Render (free) | 루트의 `render.yaml` 블루프린트로 생성. 환경변수 `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `SUPABASE_ANON_KEY`, `ALLOWED_ORIGINS` 설정 |
-| `frontend/` | Vercel (hobby) | Root Directory를 `frontend`로 지정. `.env.example`의 변수들 설정 |
-
-Render 무료 티어는 15분 무접속 시 잠들며 첫 접속에 콜드스타트(~1분)가 있습니다.
