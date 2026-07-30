@@ -42,4 +42,4 @@ npm run dev
 | `backend/` | Render (free) | 루트의 `render.yaml` 블루프린트로 생성. 환경변수 `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `SUPABASE_ANON_KEY`, `ALLOWED_ORIGINS` 설정 |
 | `frontend/` | Vercel (hobby) | Root Directory를 `frontend`로 지정. `.env.example`의 변수들 설정 |
 
-Render 무료 티어는 15분 무접속 시 잠들며 첫 접속에 콜드스타트(~1분)가 있습니다.
+Render 무료 티어는 15분 무접속 시 잠들며 첫 접속에 콜드스타트(\~1분)가 있습니다.
