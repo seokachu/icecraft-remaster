@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>IceCraft Docs — 기능명세서 아카이브</title>
+  <meta name="description" content="실시간 화상채팅 마피아 게임 IceCraft의 버전별 기능명세서 아카이브" />
+  <link rel="stylesheet" href="/docs/docs.css" />
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <a class="brand" href="/docs">IceCraft Docs</a>
+      <nav>
+        <a href="/">서비스로 이동</a>
+        <a href="https://github.com/seokachu/icecraft-remaster" target="_blank" rel="noopener noreferrer">GitHub</a>
+      </nav>
+    </div>
+
+    <header class="doc">
+      <h1>IceCraft Docs</h1>
+      <p class="sub">기능명세서 아카이브</p>
+      <p class="desc">
+        실시간 화상채팅 기반 마피아 게임 IceCraft의 기능명세 기록입니다.
+        2024년 4인 팀 프로젝트 원본(v1)에서 개인 리마스터(v2)로 이어지는
+        서비스 재구축 과정을 버전별 명세로 추적합니다.
+      </p>
+    </header>
+
+    <div class="cards">
+      <article class="card">
+        <div class="labels">
+          <span class="badge">구버전</span>
+          <span class="badge">팀 원본</span>
+        </div>
+        <h2>기능명세서 v1</h2>
+        <p>
+          2024년 4인 팀 프로젝트 IceCraft의 최종 스냅샷 기준 명세입니다.
+          LiveKit 화상채팅, 5~6인 게임, 소셜 로그인 4종 등 리마스터가
+          물려받은 기능 범위와 알려진 한계를 기록합니다.
+        </p>
+        <a class="more" href="/docs/spec-v1.html">문서 보기 →</a>
+      </article>
+
+      <article class="card">
+        <div class="labels">
+          <span class="badge current">현행</span>
+          <span class="badge built">As-Built</span>
+        </div>
+        <h2>기능명세서 v2</h2>
+        <p>
+          개인 리마스터 버전의 전체 기능 명세입니다. 순수 WebRTC P2P mesh 전환,
+          3~6인 역할 분배 개편, RLS 기반 보안, 서버측 점수 갱신 등
+          구현 과정에서 확정된 결정을 기록합니다.
+        </p>
+        <a class="more" href="/docs/spec-v2.html">문서 보기 →</a>
+      </article>
+    </div>
+
+    <section>
+      <h2>버전 기록</h2>
+      <div class="tablewrap">
+        <table>
+          <thead>
+            <tr>
+              <th class="num">버전</th>
+              <th class="num">일자</th>
+              <th class="num">상태</th>
+              <th>요약</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="num">v1.0</td>
+              <td class="num">2024 (팀 프로젝트)</td>
+              <td class="num"><span class="badge">구버전</span></td>
+              <td>팀 프로젝트 원본 기능 — LiveKit 화상 · 5~6인 · 소셜 로그인 4종 · 클라이언트 쓰기 구조</td>
+            </tr>
+            <tr>
+              <td class="num">v2.0</td>
+              <td class="num">2026-07-30</td>
+              <td class="num"><span class="badge current">현행</span></td>
+              <td>리마스터 As-Built — WebRTC P2P mesh · 3~6인 역할 개편 · RLS 보안 · 무료 인프라(Vercel · Render · Supabase)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer class="doc">
+      <span>IceCraft Remaster — 기능명세서 아카이브</span>
+      <a href="https://github.com/seokachu/icecraft-remaster" target="_blank" rel="noopener noreferrer">github.com/seokachu/icecraft-remaster</a>
+    </footer>
+  </div>
+</body>
+</html>

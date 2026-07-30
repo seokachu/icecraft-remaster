@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>IceCraft 기능명세서 v1 — 팀 프로젝트 원본</title>
+  <meta name="description" content="IceCraft 팀 프로젝트 원본(2024) 스냅샷 기준 기능명세서" />
+  <link rel="stylesheet" href="/docs/docs.css" />
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <a class="brand" href="/docs">IceCraft Docs</a>
+      <nav>
+        <a href="/docs">← 아카이브</a>
+        <a href="/docs/spec-v2.html">v2 (현행)</a>
+      </nav>
+    </div>
+
+    <header class="doc">
+      <h1>IceCraft 기능명세서 v1</h1>
+      <p class="sub">팀 프로젝트 원본 · 구버전</p>
+      <p class="desc">
+        2024년 4인 팀 프로젝트로 개발된 IceCraft 원본의 기능 명세입니다.
+        개인 리마스터 저장소로 이관된 최종 스냅샷을 기준으로 기능 범위와
+        알려진 한계를 소급 정리(As-Was)했으며, 여기 기록된 한계가 v2 리마스터의 목표가 됩니다.
+      </p>
+
+      <dl class="meta">
+        <div><dt>문서 버전</dt><dd>v1.0 (구버전 — v2로 대체됨)</dd></div>
+        <div><dt>기준 시점</dt><dd>2024년 팀 프로젝트 최종 스냅샷 (리마스터 저장소 초기 커밋)</dd></div>
+        <div><dt>범위</dt><dd><code>frontend/</code> · <code>backend/</code> — 원본 코드 전체</dd></div>
+        <div><dt>후속 문서</dt><dd><a href="/docs/spec-v2.html" style="color:var(--accent)">기능명세서 v2 (리마스터 · 현행)</a></dd></div>
+      </dl>
+    </header>
+
+    <nav class="toc">
+      <strong>목차</strong>
+      <ol>
+        <li><a href="#s1">서비스 개요</a></li>
+        <li><a href="#s2">기술 스택</a></li>
+        <li><a href="#s3">화면 구성 및 사용자 흐름</a></li>
+        <li><a href="#s4">기능 명세</a></li>
+        <li><a href="#s5">게임 진행 규칙 (5~6인)</a></li>
+        <li><a href="#s6">데이터 명세</a></li>
+        <li><a href="#s7">알려진 한계 및 리마스터(v2) 방향</a></li>
+        <li><a href="#s8">개정 이력</a></li>
+      </ol>
+    </nav>
+
+    <main class="doc">
+
+      <section id="s1">
+        <h2><span class="no">1.</span>서비스 개요</h2>
+        <p>
+          IceCraft는 <strong>실시간 화상채팅 위에서 진행하는 마피아 게임 웹 서비스</strong>입니다.
+          참가자 전원이 캠과 마이크를 켠 상태로 낮 토론과 밤 행동을 반복하며,
+          게임 서버가 사회자 역할을 맡아 단계 전환 · 미디어 on/off · 투표 집계를 자동 진행합니다.
+        </p>
+        <ul>
+          <li>2024년 4인 팀 프로젝트로 개발되었습니다.</li>
+          <li>화상 스트리밍은 LiveKit(SFU)을 사용하고, 게임 진행은 Socket.IO 서버가 담당합니다.</li>
+          <li>게임 종류로 "마피아"와 "노래맞추기" 두 가지를 기획했으나, 노래맞추기는 UI 자리만 존재하는 미구현 상태입니다.</li>
+        </ul>
+      </section>
+
+      <section id="s2">
+        <h2><span class="no">2.</span>기술 스택</h2>
+        <div class="tablewrap">
+          <table>
+            <thead>
+              <tr><th>영역</th><th>기술</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>프론트엔드</td>
+                <td>Next.js 14 (App Router) · React 18 · TypeScript · Zustand · CSS Modules (+ Tailwind) · socket.io-client</td>
+              </tr>
+              <tr>
+                <td>화상 · 음성</td>
+                <td>LiveKit (<code>livekit-client</code> · <code>@livekit/components-react</code> · <code>livekit-server-sdk</code>) — SFU 방식</td>
+              </tr>
+              <tr>
+                <td>백엔드</td>
+                <td>Express 4 · Socket.IO 4.7 (<code>/mafia</code> 네임스페이스) · TypeScript</td>
+              </tr>
+              <tr>
+                <td>인증 · DB</td>
+                <td>Supabase (Auth · Postgres) — 클라이언트가 anon key로 직접 조회 · 쓰기</td>
+              </tr>
+              <tr>
+                <td>부가</td>
+                <td>framer-motion · swiper · react-toastify · react-paginate · js-confetti · EmailJS · Typebot · GA4</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="s3">
+        <h2><span class="no">3.</span>화면 구성 및 사용자 흐름</h2>
+        <pre class="flow">인트로 /
+  ├─ 로그인 /login ── 소셜 로그인 → OAuth 콜백 /sns-login
+  ├─ 회원가입 /register
+  ▼
+로비 /main ──[방 만들기 · 입장 · 빠른입장]──▶ 게임 방 /room/{id}
+  ├─ 랭킹 /ranking
+  ├─ 게임 방법 /mafiainfo
+  └─ 문의 /inquiry</pre>
+        <ul>
+          <li>로그인 상태로 인트로 · 로그인 · 회원가입 페이지에 접근하면 로비로 리다이렉트합니다.</li>
+          <li>게임 방은 로비를 거치지 않은 직접 URL 진입을 차단합니다 (입장 상태가 아니면 로비로 강제 이동).</li>
+        </ul>
+      </section>
+
+      <section id="s4">
+        <h2><span class="no">4.</span>기능 명세</h2>
+
+        <h3>4.1 인증</h3>
+        <article class="fr">
+          <h4><code class="fr-id">FR-101</code> 이메일 회원가입</h4>
+          <ul>
+            <li>이메일 형식 검사와 [중복확인] 버튼으로 <code>account_table</code> 중복 여부를 확인합니다.</li>
+            <li>닉네임은 2~6자(영문 · 한글 · 숫자), 비밀번호는 <strong>6~12자에 대문자 · 소문자 필수</strong>입니다.</li>
+            <li>가입 성공 시 <strong>클라이언트가 <code>account_table</code>에 계정 행을 직접 insert</strong>합니다.</li>
+          </ul>
+        </article>
+        <article class="fr">
+          <h4><code class="fr-id">FR-102</code> 로그인</h4>
+          <ul>
+            <li>이메일 + 비밀번호 로그인과 이메일 저장(쿠키 30일)을 제공합니다.</li>
+            <li>소셜 로그인은 <strong>카카오 · 구글 · 깃허브 · 페이스북 4종</strong>을 제공합니다.</li>
+          </ul>
+        </article>
+
+        <h3>4.2 로비 · 방 관리</h3>
+        <article class="fr">
+          <h4><code class="fr-id">FR-201</code> 방 목록 · 검색 · 생성 · 입장</h4>
+          <ul>
+            <li>방 목록 실시간 갱신, 제목 검색(500ms 디바운스), 빠른입장을 제공합니다.</li>
+            <li>방 생성 시 제목(최대 16자)과 인원수를 설정합니다. <strong>지원 인원은 5~6명</strong>입니다.</li>
+            <li>게임 중(<code>is_playing</code>)인 방은 입장을 차단합니다.</li>
+            <li>방장은 입장 시각(<code>join_time</code>)이 가장 빠른 유저로 자동 지정 · 위임됩니다.</li>
+          </ul>
+        </article>
+        <article class="fr">
+          <h4><code class="fr-id">FR-202</code> 준비 / 시작</h4>
+          <ul>
+            <li>참가자가 전원 준비를 완료하면 방장 화면의 버튼이 [게임시작]으로 전환됩니다.</li>
+            <li><strong>시작 요청에 대한 서버측 검증이 없어</strong>, 방장이 아닌 유저의 시작 요청이나 중복 시작 요청도 처리됩니다 (§7 참조).</li>
+          </ul>
+        </article>
+
+        <h3>4.3 게임 진행</h3>
+        <article class="fr">
+          <h4><code class="fr-id">FR-301</code> 사회자 자동 진행</h4>
+          <ul>
+            <li>서버가 1초 간격 스테이트 머신으로 밤 → 낮 토론 → 투표 → 최후의 변론 → 찬반 → 밤 행동을 자동 진행합니다.</li>
+            <li>단계별로 참가자의 캠 · 마이크를 서버가 일괄 제어합니다.</li>
+            <li>세부 규칙은 §5, 라운드 타임라인 상세는 v2 문서 §5와 동일 구조입니다.</li>
+          </ul>
+        </article>
+
+        <h3>4.4 화상 · 음성</h3>
+        <article class="fr">
+          <h4><code class="fr-id">FR-401</code> LiveKit 기반 화상채팅</h4>
+          <ul>
+            <li>LiveKit Cloud(SFU)로 방 참가자의 영상 · 음성을 중계합니다.</li>
+            <li>입장 전 캠 · 마이크 권한 확인과 미리보기 화면을 거쳐 방에 참여합니다.</li>
+          </ul>
+        </article>
+
+        <h3>4.5 랭킹 · 점수</h3>
+        <article class="fr">
+          <h4><code class="fr-id">FR-501</code> 점수 반영 · 랭킹 조회</h4>
+          <ul>
+            <li>게임 종료 시 승리 팀 +100점, 패배 팀 +20점을 부여합니다.</li>
+            <li><strong>점수 갱신을 클라이언트가 직접 수행</strong>합니다 (§7 참조).</li>
+            <li>랭킹 페이지는 총점 내림차순 목록, 본인 순위 고정 표시, 10명 단위 페이지네이션을 제공합니다.</li>
+          </ul>
+        </article>
+
+        <h3>4.6 부가 기능</h3>
+        <article class="fr">
+          <h4><code class="fr-id">FR-601</code> 튜토리얼 · 문의 · 안내</h4>
+          <ul>
+            <li>게임 룰 튜토리얼 페이지(<code>/mafiainfo</code>), EmailJS 문의 폼, Typebot 챗봇 버블, 공지 팝업(하루 보지 않기)을 제공합니다.</li>
+          </ul>
+        </article>
+      </section>
+
+      <section id="s5">
+        <h2><span class="no">5.</span>게임 진행 규칙 (5~6인)</h2>
+        <h3>5.1 역할 분배</h3>
+        <div class="tablewrap">
+          <table>
+            <thead>
+              <tr><th class="num">인원</th><th class="num">마피아</th><th class="num">경찰</th><th class="num">의사</th><th class="num">시민</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="num">5명</td><td class="num">1</td><td class="num">0</td><td class="num">0</td><td class="num">4</td></tr>
+              <tr><td class="num">6명</td><td class="num">2</td><td class="num">1</td><td class="num">0</td><td class="num">3</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="note">
+          <strong>참고:</strong> 의사 역할은 코드와 게임 룰 문서에 존재하지만, 5~6인 분배표에서 배정 인원이 0명이라
+          실제 게임에는 등장하지 않습니다. 경찰도 6인 게임에서만 등장합니다.
+        </div>
+        <h3>5.2 승리 조건</h3>
+        <ul>
+          <li>생존 마피아가 0명이 되면 <strong>시민 팀 승리</strong>입니다.</li>
+          <li>생존 마피아 수가 생존 시민 수 이상이 되면 <strong>마피아 팀 승리</strong>입니다.</li>
+        </ul>
+      </section>
+
+      <section id="s6">
+        <h2><span class="no">6.</span>데이터 명세</h2>
+        <p>Supabase Postgres 테이블 3개로 구성됩니다. (컬럼 상세는 v2 문서 §6과 동일합니다.)</p>
+        <div class="tablewrap">
+          <table>
+            <thead>
+              <tr><th>테이블</th><th>역할</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>account_table</code></td><td>계정 · 누적 점수 (마피아 / 노래맞추기 / 총점)</td></tr>
+              <tr><td><code>room_table</code></td><td>게임 방 (제목 · 카테고리 · 방장 · 인원 · 게임 중 여부)</td></tr>
+              <tr><td><code>room_user_match_table</code></td><td>방-유저 매칭 + 게임 상태 (역할 · 생존 · 준비 · 투표)</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="warn">
+          <strong>보안 구조:</strong> RLS(Row Level Security)가 적용되어 있지 않아 클라이언트가 anon key로
+          모든 테이블을 직접 읽고 쓸 수 있습니다. 마피아 <code>role</code> 컬럼도 클라이언트에서 조회 가능합니다.
+        </div>
+      </section>
+
+      <section id="s7">
+        <h2><span class="no">7.</span>알려진 한계 및 리마스터(v2) 방향</h2>
+        <div class="tablewrap">
+          <table>
+            <thead>
+              <tr><th>v1 한계</th><th>v2 리마스터 방향</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>LiveKit Cloud(외부 SaaS) 의존 — 무료 쿼터 · 계정 종속</td>
+                <td>순수 WebRTC P2P mesh로 전환 (외부 미디어 서버 제거)</td>
+              </tr>
+              <tr>
+                <td>5~6인만 지원, 의사 역할 미배정</td>
+                <td>3~6인 지원 · 인원별 역할 분배 개편 (의사 · 경찰 정식 등장)</td>
+              </tr>
+              <tr>
+                <td>RLS 부재 — 클라이언트가 계정 생성 · 점수 갱신 · role 조회 가능</td>
+                <td>RLS 도입, 쓰기 전면 차단, role 컬럼 은닉, 서버(service_role) 단독 쓰기</td>
+              </tr>
+              <tr>
+                <td>게임 시작 검증 부재 — 아무나 · 중복 시작 가능 (게임 루프 다중 실행 사고)</td>
+                <td>방장 소켓 검증 + 게임 레지스트리로 중복 실행 차단</td>
+              </tr>
+              <tr>
+                <td>팀 계정 인프라(Supabase 등) 접속 불가</td>
+                <td>개인 계정 무료 인프라로 이전 (Vercel · Render · Supabase 신규 프로젝트)</td>
+              </tr>
+              <tr>
+                <td>GA 키 미설정 시 앱 전체 크래시</td>
+                <td>GA를 선택 환경변수로 전환 (키 없으면 추적만 스킵)</td>
+              </tr>
+              <tr>
+                <td>소셜 로그인 4종 유지 부담, 과도한 비밀번호 규칙</td>
+                <td>카카오 · 구글 2종으로 정리, 비밀번호 6~20자로 완화</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="s8">
+        <h2><span class="no">8.</span>개정 이력</h2>
+        <div class="tablewrap">
+          <table>
+            <thead>
+              <tr><th class="num">버전</th><th class="num">일자</th><th>내용</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="num">v1.0</td>
+                <td class="num">2026-07-30</td>
+                <td>팀 프로젝트 원본 스냅샷(2024)을 소급 정리한 As-Was 문서 작성. 상태: 구버전 (v2로 대체)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </main>
+
+    <footer class="doc">
+      <span>IceCraft 기능명세서 v1 — 구버전</span>
+      <a href="/docs/spec-v2.html">기능명세서 v2 (현행) →</a>
+    </footer>
+  </div>
+</body>
+</html>
