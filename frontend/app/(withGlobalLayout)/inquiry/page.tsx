@@ -5,6 +5,7 @@ import S from "@/style/commons/commons.module.css";
 import emailjs from "emailjs-com";
 import { toast } from "react-toastify";
 import { InputMessage } from "@/components/commons/InputMessage";
+import { SubmitButton } from "@/components/commons/SubmitButton";
 
 const TITLE_MAX_LENGTH = 50;
 
@@ -180,9 +181,7 @@ const InquiryPage = () => {
           />
           <InputMessage id="message-message" text={contentMessage} />
         </div>
-        <button type="submit" disabled={isSending}>
-          보내기
-        </button>
+        <SubmitButton disabled={isSending}>보내기</SubmitButton>
       </form>
     </section>
   );

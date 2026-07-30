@@ -87,24 +87,6 @@
   white-space: nowrap;
 }
 
-.registerButtonInactive {
-  width: 100%;
-  font-weight: var(--font-bold);
-  padding: 16px 0;
-  border-radius: var(--border-radius);
-  background-color: var(--silver-gray);
-  color: var(--white);
-}
-
-.registerButtonActive {
-  width: 100%;
-  font-weight: var(--font-bold);
-  padding: 16px 0;
-  border-radius: var(--border-radius);
-  background-color: var(--primary-color);
-  color: var(--white);
-}
-
 .simpleLogin h3 {
   color: #747474;
   text-align: center;

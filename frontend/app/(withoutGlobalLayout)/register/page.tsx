@@ -10,7 +10,7 @@ import Logo from "@/assets/images/logo.svg";
 import Image from "next/image";
 import S from "@/style/register/register.module.css";
 import Link from "next/link";
-import { RegisterButton } from "@/components/register/RegisterButton";
+import { SubmitButton } from "@/components/commons/SubmitButton";
 import { useRouter } from "next/navigation";
 
 const Register = () => {
@@ -281,7 +281,7 @@ const Register = () => {
             </div>
           </div>
           <div>
-            <RegisterButton active={canRegister && !isSubmitting} />
+            <SubmitButton disabled={!canRegister || isSubmitting}>회원가입</SubmitButton>
             {<InputMessage text={registerMessage} />}
           </div>
           <div className={S.simpleLogin}>

@@ -95,19 +95,6 @@
   justify-content: center;
 }
 
-.loginButton {
-  width: 100%;
-  font-weight: var(--font-bold);
-  padding: 16px 0;
-  border-radius: var(--border-radius);
-  background-color: var(--primary-color);
-  color: var(--white);
-}
-
-.loginButton:disabled {
-  background-color: var(--silver-gray);
-}
-
 .error {
   color: var(--variation-error);
   font-size: var(--font-size-small);

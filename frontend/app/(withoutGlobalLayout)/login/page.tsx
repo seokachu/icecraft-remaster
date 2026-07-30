@@ -11,6 +11,7 @@ import GoogleLoginIcon from "@/assets/images/join_google.svg";
 import Logo from "@/assets/images/logo.svg";
 import ErrorMessage from "@/components/logIn/ErrorMessage";
 import { InputMessage } from "@/components/commons/InputMessage";
+import { SubmitButton } from "@/components/commons/SubmitButton";
 import { useCookies } from "react-cookie";
 
 const validateEmail = (email: string) => {
@@ -215,9 +216,7 @@ const LogIn = () => {
               </li>
             </ul>
           </div>
-          <button type="submit" className={S.loginButton} disabled={isSubmitting}>
-            로그인
-          </button>
+          <SubmitButton disabled={isSubmitting}>로그인</SubmitButton>
         </form>
       </main>
     </div>
