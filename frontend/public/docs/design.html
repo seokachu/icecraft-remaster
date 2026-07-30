@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>IceCraft 디자인 시안 — 화면 구성 · 디자인 시스템</title>
-  <meta name="description" content="IceCraft의 화면 플로우와 디자인 시스템 — 토큰 · 컬러 · 타이포그래피 · 컴포넌트" />
+  <title>IceCraft 디자인 시스템</title>
+  <meta name="description" content="IceCraft 디자인 시스템 — 컬러 · 타이포그래피 토큰과 컴포넌트 규격" />
   <link rel="stylesheet" href="/docs/docs.css" />
   <style>
     @font-face {
@@ -40,36 +40,59 @@
     .canvas.dark .cap { color: #93a5c0; }
     .row { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
     .row.top { align-items: flex-start; }
+    .row.gap28 { gap: 28px; }
 
-    /* ---------- 컬러 스와치 ---------- */
-    .swatches {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(178px, 1fr));
-      gap: 12px;
-      margin: 14px 0;
+    /* ---------- 출처 배지 ---------- */
+    .src {
+      display: inline-block;
+      font-size: 11px;
+      line-height: 1.6;
+      border-radius: 20px;
+      padding: 1px 9px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      vertical-align: middle;
+      white-space: nowrap;
     }
-    .sw {
+    .src.ds { border-color: #2f6d4a; color: #7fd6a3; }
+    .src.impl { border-color: #4a3a6d; color: #bda8f0; }
+    h2 .src, h3 .src { margin-left: 8px; font-weight: 400; }
+
+    /* ---------- 컬러 토큰 카드 ---------- */
+    .tokens {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 14px;
+      margin: 16px 0;
+    }
+    .tk {
       border: 1px solid var(--border);
       border-radius: 10px;
       overflow: hidden;
       background: var(--surface);
     }
-    .sw .chip { height: 58px; display: block; }
-    .sw .info { padding: 9px 12px 12px; }
-    .sw .name { font-size: 13px; font-weight: 700; display: block; }
-    .sw .tok {
+    .tk .chip { height: 76px; display: block; }
+    .tk .info { padding: 11px 13px 13px; }
+    .tk .name {
+      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      font-size: 13px;
+      font-weight: 700;
+      display: block;
+      color: var(--accent-strong);
+    }
+    .tk .val {
       font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
       font-size: 11.5px;
-      color: var(--accent);
-      display: block;
-      margin-top: 2px;
-      word-break: break-all;
-    }
-    .sw .use {
-      font-size: 12px;
       color: var(--muted);
       display: block;
-      margin-top: 5px;
+      margin-top: 4px;
+      line-height: 1.7;
+    }
+    .tk .use {
+      font-size: 12px;
+      color: var(--text);
+      display: block;
+      margin-top: 8px;
       line-height: 1.55;
     }
 
@@ -78,7 +101,7 @@
       display: flex;
       align-items: baseline;
       gap: 20px;
-      padding: 13px 0;
+      padding: 12px 0;
       border-bottom: 1px solid var(--border);
       flex-wrap: wrap;
     }
@@ -87,111 +110,62 @@
       font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
       font-size: 12px;
       color: var(--muted);
-      min-width: 215px;
+      min-width: 190px;
       flex-shrink: 0;
       line-height: 1.6;
     }
     .type-meta b { color: var(--accent); font-weight: 700; }
-    .type-sample { color: var(--text); line-height: 1.3; }
+    .type-sample { color: var(--text); }
     .font-designer { font-family: "Designer", "Pretendard", sans-serif; }
 
-    /* ---------- 컴포넌트 복제본 (앱 실제 값) ---------- */
+    /* ---------- 컴포넌트 복제본 (구현 값) ---------- */
+    .c-header {
+      background: #050b15;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 21px 30px;
+      gap: 40px;
+      color: #ffffff;
+    }
+    .c-header .logo { font-size: 24px; letter-spacing: 0.04em; }
+    .c-header .nav { display: flex; align-items: center; gap: 20px; font-size: 16px; }
+
+    .c-footer {
+      background: #eeeeee;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 21px 30px;
+      gap: 30px;
+      font-size: 14px;
+      color: #111111;
+    }
+    .c-footer a { color: #5c5bad; }
+
     .btn {
       font-family: inherit;
-      font-size: 15px;
       font-weight: 700;
       border-radius: 8px;
-      padding: 11px 22px;
       border: 1px solid transparent;
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 7px;
       line-height: 1;
+      padding: 12px 24px;
+      font-size: 16px;
       cursor: default;
     }
-    .btn-primary { background: #5c5bad; color: #ffffff; }
-    .btn-invert { background: #ffffff; color: #5c5bad; border-color: #5c5bad; }
-    .btn-light { background: #ffffff; color: #111111; }
-    .btn-inactive { background: #bfbfbf; color: #ffffff; }
-    .btn-chief { background: #e72424; color: #ffffff; }
-    .btn-ready { padding: 12px 40px; }
-    .btn-cancel { background: #eee; color: #111111; }
+    .btn-primary { background: #5c5bad; color: #ffffff; border-color: #5c5bad; }
     .btn-secondary { background: #bebdde; color: #ffffff; }
-    .btn-outline-gray { background: #ffffff; color: #111111; border-color: #bfbfbf; }
+    .btn-invert { background: #ffffff; color: #5c5bad; border-color: #5c5bad; }
+    .btn-disabled { background: #bfbfbf; color: #ffffff; }
+    .btn-chief { background: #e72424; color: #ffffff; }
+    .btn-cta { width: 260px; padding: 16px 0; }
+    .btn-enter { width: 120px; height: 48px; background: #ffffff; color: #111111; padding: 0; }
 
-    .field {
-      display: flex;
-      align-items: center;
-      background: #ffffff;
-      border: 1px solid #bfbfbf;
-      border-radius: 4px;
-      padding: 10px 15px;
-      min-width: 260px;
-      color: #747474;
-      font-size: 15px;
-    }
-    .field.r8 { border-radius: 8px; border-color: #d3d3d3; }
-    .field.focus { outline: 1px solid rgba(92, 91, 173, 0.5); border-color: #5c5bad; }
-    .field.err { border-color: #e72424; }
-    .f-label { font-size: 14px; color: #747474; display: block; margin-bottom: 5px; }
-    .f-label.modal { color: #838383; }
-    .f-msg { font-size: 14px; margin-top: 6px; }
-    .f-msg.e { color: #e72424; }
-    .f-msg.n { color: #747474; }
-
-    .pill {
-      border-radius: 30px;
-      padding: 5px 12px;
-      font-size: 14px;
-      color: #ffffff;
-      display: inline-block;
-    }
-    .pill-tag { background: #111111; }
-    .pill-count { background: #5c5bad; }
-    .num-badge {
-      background: rgba(92, 91, 173, 0.7);
-      color: #ffffff;
-      border-radius: 4px;
-      padding: 0 10px;
-      font-size: 14px;
-      display: inline-block;
-    }
-    .timer-badge {
-      width: 180px;
-      height: 68px;
-      background: #111111;
-      color: #ffffff;
-      font-size: 35px;
-      border-radius: 8px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .rank-badge {
-      width: 25px;
-      height: 25px;
-      background: #1c232f;
-      color: #ffffff;
-      font-weight: 700;
-      border-radius: 50%;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 13px;
-    }
-    .tooltip-badge {
-      background: #5c5bad;
-      color: #ffffff;
-      border-radius: 8px;
-      height: 40px;
-      padding: 0 15px;
-      display: inline-flex;
-      align-items: center;
-      font-size: 14px;
-    }
-
-    .room-card {
+    .c-card {
       width: 262px;
       background: #ffffff;
       border-radius: 8px;
@@ -199,7 +173,7 @@
       overflow: hidden;
       position: relative;
     }
-    .room-card .thumb {
+    .c-card .thumb {
       height: 104px;
       background: #111111;
       display: flex;
@@ -209,10 +183,10 @@
       font-size: 12.5px;
       letter-spacing: 0.08em;
     }
-    .room-card .rt { padding: 20px 15px; }
-    .room-card h5 { font-size: 20px; font-weight: 700; color: #111111; margin-bottom: 28px; }
-    .room-card .gname { display: flex; justify-content: space-between; align-items: center; }
-    .room-card .playing {
+    .c-card .body { padding: 20px 15px; }
+    .c-card h5 { font-size: 20px; font-weight: 700; color: #111111; margin-bottom: 28px; }
+    .c-card .meta { display: flex; justify-content: space-between; align-items: center; }
+    .c-card .dim {
       position: absolute;
       inset: 0;
       background: rgba(0, 0, 0, 0.7);
@@ -225,85 +199,72 @@
       letter-spacing: 3px;
     }
 
-    .modal-demo {
-      background: #ffffff;
-      border-radius: 12px;
-      padding: 30px 28px;
-      width: 302px;
-      text-align: center;
-      color: #111111;
+    .pill {
+      border-radius: 30px;
+      padding: 5px 12px;
+      font-size: 14px;
+      color: #ffffff;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
     }
-    .modal-demo .mt { font-size: 20px; font-weight: 700; }
-    .modal-demo .md { font-size: 16px; color: #747474; margin-top: 10px; }
-    .modal-demo .ma { display: flex; gap: 20px; justify-content: center; margin-top: 24px; }
-    .modal-demo .btn { width: 50%; justify-content: center; padding: 10px 0; font-size: 14px; }
+    .pill-tag { background: #111111; }
+    .pill-count { background: #5c5bad; }
 
-    .progress-demo {
-      appearance: none;
-      -webkit-appearance: none;
-      width: 100%;
-      max-width: 400px;
-      height: 5px;
-      border: none;
-    }
-    .progress-demo::-webkit-progress-bar {
-      background: #eee;
-      height: 5px;
-      border-radius: 10px;
-      box-shadow: inset 3px 3px 10px #ccc;
-    }
-    .progress-demo::-webkit-progress-value {
-      border-radius: 10px;
-      background: linear-gradient(to right, #bebdde, #5c5bad);
-    }
-
-    /* ---------- 라디우스 ---------- */
-    .radius-row { display: flex; gap: 16px; flex-wrap: wrap; }
-    .radius-item { text-align: center; }
-    .radius-box {
-      width: 78px;
-      height: 60px;
-      background: var(--surface2);
-      border: 1px solid var(--accent);
-      margin-bottom: 7px;
-    }
-    .radius-item span {
-      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-      font-size: 11.5px;
-      color: var(--muted);
-      display: block;
-      line-height: 1.5;
-    }
-
-    /* ---------- 화면 플로우 ---------- */
-    .screens {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(238px, 1fr));
-      gap: 16px;
-      margin-top: 18px;
-    }
-    .screen {
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      background: var(--surface);
-      padding: 18px 20px;
-    }
-    .screen .step {
-      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-      font-size: 12px;
-      color: var(--accent);
-      font-weight: 700;
-    }
-    .screen h4 { font-size: 15.5px; margin: 4px 0 7px; }
-    .screen p { font-size: 13.5px; color: var(--muted); line-height: 1.65; margin: 0; }
-    .screen .theme {
+    .c-tooltip {
+      position: relative;
       display: inline-block;
-      font-size: 11.5px;
-      border-radius: 20px;
-      padding: 1px 9px;
-      margin-top: 10px;
-      border: 1px solid var(--border);
-      color: var(--muted);
+      height: 40px;
+      line-height: 40px;
+      padding: 0 15px;
+      background: #5c5bad;
+      color: #ffffff;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+    .c-tooltip::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 100%;
+      transform: translateX(-50%);
+      border: 5px solid transparent;
+      border-top-color: #5c5bad;
+    }
+
+    .c-check { display: inline-flex; align-items: center; font-size: 14px; color: #747474; }
+    .c-check i {
+      width: 15px;
+      height: 15px;
+      margin-right: 5px;
+      border: 1px solid #747474;
+      border-radius: 2px;
+      display: inline-block;
+    }
+
+    .c-icons { display: flex; align-items: flex-end; gap: 26px; }
+    .c-icons .ic { text-align: center; color: #747474; font-size: 11px; }
+    .c-icons .ic b {
+      display: block;
+      background: #5c5bad;
+      border-radius: 4px;
+      margin: 0 auto 6px;
+    }
+
+    /* ---------- 표 보조 ---------- */
+    .ok { color: #7fd6a3; font-weight: 700; }
+    .hex {
+      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      font-size: 12.5px;
+    }
+    .dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+      margin-right: 5px;
+      vertical-align: -1px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
     }
   </style>
 </head>
@@ -318,174 +279,269 @@
     </div>
 
     <header class="doc">
-      <h1 class="font-designer" style="font-size:40px; letter-spacing:0.02em;">ICECRAFT — DESIGN PREVIEW</h1>
-      <p class="sub">화면 구성 · 디자인 시스템</p>
+      <h1 class="font-designer" style="font-size:40px; letter-spacing:0.02em;">ICECRAFT — DESIGN SYSTEM</h1>
+      <p class="sub">디자인 토큰 · 타이포그래피 · 컴포넌트 규격</p>
       <p class="desc">
-        실시간 화상 마피아 게임 IceCraft의 화면 흐름과 디자인 토큰을 정리했습니다.
-        아래 컬러 · 타이포 · 컴포넌트 견본은 이미지가 아니라
-        <strong>서비스와 동일한 CSS 값으로 실제 렌더링</strong>한 것입니다.
+        실시간 화상 마피아 게임 IceCraft의 디자인 시스템입니다.
+        컬러와 타이포그래피는 <strong>Figma 디자인시스템에서 정의한 토큰</strong>을 그대로 따르고,
+        컴포넌트 규격은 <strong>서비스에 구현된 값을 기준</strong>으로 삼습니다.
+        아래 견본은 이미지가 아니라 <strong>실제 값으로 렌더링</strong>한 것입니다.
       </p>
 
       <dl class="meta">
-        <div><dt>문서 버전</dt><dd>v1.0 · As-Built (구현 코드에서 추출)</dd></div>
+        <div><dt>문서 버전</dt><dd>v2.0</dd></div>
         <div><dt>기준일</dt><dd>2026-07-30</dd></div>
-        <div><dt>토큰 원본</dt><dd><code>frontend/app/globals.css</code> <code>:root</code> — 공식 변수 18개</dd></div>
-        <div><dt>스타일 구현</dt><dd>CSS Modules 10개 파일 (<code>frontend/style/</code>)</dd></div>
+        <div><dt>토큰 원본</dt><dd>Figma <code>디자인시스템</code> — 컬러 6 · 텍스트 스타일 20</dd></div>
+        <div><dt>구현 원본</dt><dd><code>frontend/app/globals.css</code> <code>:root</code> · CSS Modules 9개 파일</dd></div>
       </dl>
     </header>
 
     <nav class="toc">
       <strong>목차</strong>
       <ol>
-        <li><a href="#s1">화면 구성 · 플로우</a></li>
-        <li><a href="#s2">디자인 토큰</a></li>
-        <li><a href="#s3">컬러 팔레트</a></li>
-        <li><a href="#s4">타이포그래피</a></li>
-        <li><a href="#s5">컴포넌트</a></li>
-        <li><a href="#s6">라디우스 · 섀도 · 스페이싱</a></li>
-        <li><a href="#s7">테마 운용 원칙</a></li>
-        <li><a href="#s8">토큰 정리 로드맵</a></li>
+        <li><a href="#s1">토큰 체계</a></li>
+        <li><a href="#s2">컬러</a></li>
+        <li><a href="#s3">타이포그래피</a></li>
+        <li><a href="#s4">컴포넌트</a></li>
+        <li><a href="#s5">레이아웃 · 반응형</a></li>
+        <li><a href="#s6">다음 단계</a></li>
+        <li><a href="#s7">부록 — 디자인 진행 과정</a></li>
       </ol>
     </nav>
 
     <main class="doc">
 
       <section id="s1">
-        <h2><span class="no">1.</span>화면 구성 · 플로우</h2>
-        <pre class="flow">인트로 → 로그인 · 회원가입 → 로비 → 캠 · 마이크 설정 → 게임 방 → 결과
-                                  └─ 랭킹 · 게임 방법 · 문의</pre>
-        <div class="screens">
-          <div class="screen">
-            <span class="step">01</span>
-            <h4>인트로</h4>
-            <p>배경 영상 위에 Designer 폰트 60px 타이핑 히어로. Get Started · Login 두 버튼(454×68px)이 세로로 놓입니다.</p>
-            <span class="theme">영상 배경 + 화이트</span>
-          </div>
-          <div class="screen">
-            <span class="step">02</span>
-            <h4>로그인 · 회원가입</h4>
-            <p>배경 이미지 위에 radius 24px 흰 폼 카드. 입력 항목별 실시간 유효성 메시지를 14px로 표시합니다.</p>
-            <span class="theme">이미지 배경 + 라이트 카드</span>
-          </div>
-          <div class="screen">
-            <span class="step">03</span>
-            <h4>로비</h4>
-            <p>상단 게임 슬라이드(이미지 히어로) + 하단 방 목록. 검색 · 빠른입장 · 방 만들기가 한 줄에 놓입니다.</p>
-            <span class="theme">다크 히어로 + 라이트 본문</span>
-          </div>
-          <div class="screen">
-            <span class="step">04</span>
-            <h4>방 만들기 모달</h4>
-            <p>radius 12px · padding 80px 흰 모달. 게임 종류 · 방 제목 · 인원(3~6인)을 302px 폼에서 선택합니다.</p>
-            <span class="theme">라이트 모달 + 딤</span>
-          </div>
-          <div class="screen">
-            <span class="step">05</span>
-            <h4>캠 · 마이크 설정</h4>
-            <p><code>#111111</code> 단색 배경의 미리보기 화면. 권한 거부 시 OS별 트러블슈팅 안내로 전환됩니다.</p>
-            <span class="theme">다크</span>
-          </div>
-          <div class="screen">
-            <span class="step">06</span>
-            <h4>게임 방</h4>
-            <p>참가자 캠 그리드 + 사회자 모달 + 타이머(180×68px). 낮/밤에 따라 배경 이미지가 교체됩니다.</p>
-            <span class="theme">낮 / 밤 전환</span>
-          </div>
-          <div class="screen">
-            <span class="step">07</span>
-            <h4>결과 · 랭킹</h4>
-            <p>승리 모달이 1초 페이드업으로 등장한 뒤 대기 상태로 복귀. 랭킹에서 누적 점수와 내 순위를 확인합니다.</p>
-            <span class="theme">라이트</span>
-          </div>
+        <h2><span class="no">1.</span>토큰 체계</h2>
+        <p>
+          값의 출처를 두 가지로 구분합니다.
+          <span class="src ds">디자인 토큰</span>은 Figma 디자인시스템에 정의된 값,
+          <span class="src impl">구현 규격</span>은 서비스 구현 과정에서 확정한 값입니다.
+        </p>
+
+        <div class="tablewrap">
+          <table>
+            <thead><tr><th>레이어</th><th class="num">수</th><th>내용</th><th>기준</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><strong>컬러 토큰</strong></td>
+                <td class="num">6</td>
+                <td><code>Main</code> · <code>Sub</code> · <code>UIText/</code>{<code>Black</code> <code>White</code> <code>PlaceHolder</code> <code>Error</code>}</td>
+                <td><span class="src ds">디자인 토큰</span></td>
+              </tr>
+              <tr>
+                <td><strong>텍스트 스타일</strong></td>
+                <td class="num">20</td>
+                <td>Pretendard 4웨이트 × 사이즈별, 행간 공식 내장</td>
+                <td><span class="src ds">디자인 토큰</span></td>
+              </tr>
+              <tr>
+                <td><strong>확장 팔레트</strong></td>
+                <td class="num">6</td>
+                <td>서피스 · 보더 · 보조 텍스트 — 구현에서 보강</td>
+                <td><span class="src impl">구현 규격</span></td>
+              </tr>
+              <tr>
+                <td><strong>컴포넌트</strong></td>
+                <td class="num">8</td>
+                <td>Header · Footer · Button · Game Card · Cam · ToolTip · CheckBox · Icon</td>
+                <td><span class="src impl">구현 규격</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="note">
+          <strong>CSS 변수로 관리합니다.</strong>
+          Figma 토큰을 <code>globals.css</code>의 <code>:root</code> 변수 18개로 옮겨두고,
+          컴포넌트 스타일은 그 위에 CSS Modules로 쌓습니다.
+          Sass나 Tailwind 없이 <strong>네이티브 CSS 변수만으로 테마를 관리</strong>하는 구조입니다.
         </div>
       </section>
 
       <section id="s2">
-        <h2><span class="no">2.</span>디자인 토큰</h2>
-        <p>
-          공식 토큰은 <code>globals.css</code>의 <code>:root</code> 변수 18개입니다.
-          컬러 9 · 타이포 7 · 레이아웃 2로 구성되며, 컴포넌트 스타일은 이 위에 CSS Modules로 쌓입니다.
-        </p>
+        <h2><span class="no">2.</span>컬러</h2>
+
+        <h3>2.1 브랜드 <span class="src ds">디자인 토큰</span></h3>
+        <div class="tokens">
+          <div class="tk">
+            <span class="chip" style="background:#5c5bad"></span>
+            <span class="info">
+              <span class="name">Main</span>
+              <span class="val">#5C5BAD<br />rgb(92, 91, 173)<br />hsl(241, 33%, 52%)</span>
+              <span class="use">주요 CTA · 인원 배지 · 포커스 · 링크 · 진행바</span>
+            </span>
+          </div>
+          <div class="tk">
+            <span class="chip" style="background:#bebdde"></span>
+            <span class="info">
+              <span class="name">Sub</span>
+              <span class="val">#BEBDDE<br />rgb(190, 189, 222)<br />hsl(242, 33%, 81%)</span>
+              <span class="use">보조 액션 · 진행바 그라데이션 시작</span>
+            </span>
+          </div>
+        </div>
+
+        <h3>2.2 UIText <span class="src ds">디자인 토큰</span></h3>
+        <div class="tokens">
+          <div class="tk">
+            <span class="chip" style="background:#111111"></span>
+            <span class="info">
+              <span class="name">UIText/Black</span>
+              <span class="val">#111111<br />rgb(17, 17, 17)<br />hsl(0, 0%, 7%)</span>
+              <span class="use">기본 텍스트 · 다크 서피스 겸용</span>
+            </span>
+          </div>
+          <div class="tk">
+            <span class="chip" style="background:#ffffff; border-bottom:1px solid #e9e9e9"></span>
+            <span class="info">
+              <span class="name">UIText/White</span>
+              <span class="val">#FFFFFF<br />rgb(255, 255, 255)<br />hsl(0, 0%, 100%)</span>
+              <span class="use">카드 · 모달 배경, 다크 위 텍스트</span>
+            </span>
+          </div>
+          <div class="tk">
+            <span class="chip" style="background:#bfbfbf"></span>
+            <span class="info">
+              <span class="name">UIText/PlaceHolder</span>
+              <span class="val">#BFBFBF<br />rgb(191, 191, 191)<br />hsl(0, 0%, 75%)</span>
+              <span class="use">placeholder · 비활성 버튼 · 인풋 보더</span>
+            </span>
+          </div>
+          <div class="tk">
+            <span class="chip" style="background:#e72424"></span>
+            <span class="info">
+              <span class="name">UIText/Error</span>
+              <span class="val">#E72424<br />rgb(231, 36, 36)<br />hsl(0, 80%, 52%)</span>
+              <span class="use">유효성 에러 · 필수 표시 · 방장 게임시작</span>
+            </span>
+          </div>
+        </div>
+
+        <h3>2.3 CSS 변수 매핑</h3>
+        <p>디자인 토큰 6종이 <code>:root</code> 변수와 1:1로 대응합니다.</p>
         <div class="tablewrap">
           <table>
-            <thead><tr><th>토큰</th><th class="num">값</th><th>용도</th></tr></thead>
+            <thead><tr><th>Figma 토큰</th><th class="num">값</th><th>CSS 변수</th><th class="num">적용</th></tr></thead>
             <tbody>
-              <tr><td><code>--primary-color</code></td><td class="num">#5c5bad</td><td>브랜드 퍼플 — 주요 CTA · 링크 · 포커스 · 진행바</td></tr>
-              <tr><td><code>--secondary-color</code></td><td class="num">#bebdde</td><td>보조 퍼플 — 확인 버튼 기본, 진행바 그라데이션 시작</td></tr>
-              <tr><td><code>--header-background-color</code></td><td class="num">#050b15</td><td>글로벌 헤더 · 소개 페이지 인트로 배경</td></tr>
-              <tr><td><code>--footer-background-color</code></td><td class="num">#eeeeee</td><td>글로벌 푸터 배경</td></tr>
-              <tr><td><code>--modal-title-color</code></td><td class="num">#838383</td><td>모달 필드 라벨</td></tr>
-              <tr><td><code>--text-black</code></td><td class="num">#111111</td><td>기본 진한 텍스트 · 다크 서피스 겸용</td></tr>
-              <tr><td><code>--white</code></td><td class="num">#ffffff</td><td>카드 · 모달 배경, 다크 위 텍스트</td></tr>
-              <tr><td><code>--silver-gray</code></td><td class="num">#bfbfbf</td><td>비활성 상태 표준 · 인풋 보더 · placeholder</td></tr>
-              <tr><td><code>--variation-error</code></td><td class="num">#e72424</td><td>유효성 에러 · 필수 표시 · 방장 시작 버튼</td></tr>
-              <tr><td><code>--font-size-content</code></td><td class="num">35px</td><td>게임 타이머 · 404 본문</td></tr>
-              <tr><td><code>--font-size-title</code></td><td class="num">20px</td><td>섹션 · 카드 타이틀 (최다 사용)</td></tr>
-              <tr><td><code>--font-size-modal-title</code></td><td class="num">18px</td><td>모달 소제목 · 입장 버튼</td></tr>
-              <tr><td><code>--font-size-modal-content</code></td><td class="num">16px</td><td>모달 본문</td></tr>
-              <tr><td><code>--font-size-small</code></td><td class="num">14px</td><td>보조 텍스트 표준 — 라벨 · 배지 · 메시지</td></tr>
-              <tr><td><code>--font-size-base</code></td><td class="num">16px</td><td>기본 크기 (현재 미사용 · <a href="#s8" style="color:var(--accent)">§8</a>)</td></tr>
-              <tr><td><code>--font-bold</code></td><td class="num">700</td><td>제목 · 버튼 · 강조</td></tr>
-              <tr><td><code>--border-radius</code></td><td class="num">8px</td><td>기본 라디우스</td></tr>
-              <tr><td><code>--max-width</code></td><td class="num">1920px</td><td>페이지 최대 폭</td></tr>
+              <tr><td><code>Main</code></td><td class="num"><span class="dot" style="background:#5c5bad"></span><span class="hex">#5C5BAD</span></td><td><code>--primary-color</code></td><td class="num"><span class="ok">✓</span></td></tr>
+              <tr><td><code>Sub</code></td><td class="num"><span class="dot" style="background:#bebdde"></span><span class="hex">#BEBDDE</span></td><td><code>--secondary-color</code></td><td class="num"><span class="ok">✓</span></td></tr>
+              <tr><td><code>UIText/Black</code></td><td class="num"><span class="dot" style="background:#111111"></span><span class="hex">#111111</span></td><td><code>--text-black</code></td><td class="num"><span class="ok">✓</span></td></tr>
+              <tr><td><code>UIText/White</code></td><td class="num"><span class="dot" style="background:#ffffff"></span><span class="hex">#FFFFFF</span></td><td><code>--white</code></td><td class="num"><span class="ok">✓</span></td></tr>
+              <tr><td><code>UIText/PlaceHolder</code></td><td class="num"><span class="dot" style="background:#bfbfbf"></span><span class="hex">#BFBFBF</span></td><td><code>--silver-gray</code></td><td class="num"><span class="ok">✓</span></td></tr>
+              <tr><td><code>UIText/Error</code></td><td class="num"><span class="dot" style="background:#e72424"></span><span class="hex">#E72424</span></td><td><code>--variation-error</code></td><td class="num"><span class="ok">✓</span></td></tr>
             </tbody>
           </table>
         </div>
-        <div class="note">
-          <strong>이 문서 페이지는 별도 팔레트를 씁니다.</strong> 읽기 문서라는 성격에 맞춰 다크 네이비 + 아이스블루(<code>#0c1322</code> · <code>#7cc7f0</code>)로 구성했으며,
-          아래 견본 안의 색만 서비스 실제 값입니다.
+
+        <h3>2.4 확장 팔레트 <span class="src impl">구현 규격</span></h3>
+        <p>
+          서비스를 구현하면서 서피스 · 보더 · 보조 텍스트 용도로 보강한 색입니다.
+          브랜드 컬러를 화면당 한두 곳으로 제한하기 위해, <strong>중립 계열을 별도로 확보</strong>했습니다.
+        </p>
+        <div class="tokens">
+          <div class="tk">
+            <span class="chip" style="background:#050b15"></span>
+            <span class="info">
+              <span class="name">--header-background-color</span>
+              <span class="val">#050B15</span>
+              <span class="use">글로벌 헤더 · 게임 방법 인트로 — 라이트 화면에서도 고정</span>
+            </span>
+          </div>
+          <div class="tk">
+            <span class="chip" style="background:#eeeeee"></span>
+            <span class="info">
+              <span class="name">--footer-background-color</span>
+              <span class="val">#EEEEEE</span>
+              <span class="use">푸터 배경 · 취소 버튼 · 진행바 트랙</span>
+            </span>
+          </div>
+          <div class="tk">
+            <span class="chip" style="background:#838383"></span>
+            <span class="info">
+              <span class="name">--modal-title-color</span>
+              <span class="val">#838383</span>
+              <span class="use">모달 필드 라벨</span>
+            </span>
+          </div>
+          <div class="tk">
+            <span class="chip" style="background:#747474"></span>
+            <span class="info">
+              <span class="name">Form Gray</span>
+              <span class="val">#747474</span>
+              <span class="use">폼 라벨 · 보조 안내 — 확장 팔레트 중 최다 사용</span>
+            </span>
+          </div>
+          <div class="tk">
+            <span class="chip" style="background:#d3d3d3"></span>
+            <span class="info">
+              <span class="name">Border Gray</span>
+              <span class="val">#D3D3D3</span>
+              <span class="use">검색 · 문의 인풋 보더</span>
+            </span>
+          </div>
+          <div class="tk">
+            <span class="chip" style="background:#e9e9e9"></span>
+            <span class="info">
+              <span class="name">Divider</span>
+              <span class="val">#E9E9E9</span>
+              <span class="use">랭킹 표 행 구분선</span>
+            </span>
+          </div>
+        </div>
+
+        <h3>2.5 오버레이</h3>
+        <div class="tokens">
+          <div class="tk">
+            <span class="chip" style="background:rgba(0,0,0,0.5)"></span>
+            <span class="info">
+              <span class="name">Dim 50%</span>
+              <span class="val">rgba(0, 0, 0, .5)</span>
+              <span class="use">모달 백드롭 표준 · 역할 카드 오버레이</span>
+            </span>
+          </div>
+          <div class="tk">
+            <span class="chip" style="background:rgba(0,0,0,0.7)"></span>
+            <span class="info">
+              <span class="name">Dim 70%</span>
+              <span class="val">rgba(0, 0, 0, .7)</span>
+              <span class="use">방 카드 hover · 게임 중 상태 · 모바일 메뉴</span>
+            </span>
+          </div>
+          <div class="tk">
+            <span class="chip" style="background:rgba(92,91,173,0.7)"></span>
+            <span class="info">
+              <span class="name">Main 70%</span>
+              <span class="val">rgba(92, 91, 173, .7)</span>
+              <span class="use">게임 방 플레이어 번호 배지</span>
+            </span>
+          </div>
+          <div class="tk">
+            <span class="chip" style="background:rgba(92,91,173,0.5)"></span>
+            <span class="info">
+              <span class="name">Main 50%</span>
+              <span class="val">rgba(92, 91, 173, .5)</span>
+              <span class="use">인풋 focus outline</span>
+            </span>
+          </div>
         </div>
       </section>
 
       <section id="s3">
-        <h2><span class="no">3.</span>컬러 팔레트</h2>
+        <h2><span class="no">3.</span>타이포그래피</h2>
 
-        <h3>3.1 브랜드 · 포인트</h3>
-        <div class="swatches">
-          <div class="sw"><span class="chip" style="background:#5c5bad"></span><span class="info"><span class="name">Primary</span><span class="tok">#5c5bad · --primary-color</span><span class="use">주요 CTA, 인원 배지, 포커스 링, 스피너 — 최다 사용</span></span></div>
-          <div class="sw"><span class="chip" style="background:#bebdde"></span><span class="info"><span class="name">Secondary</span><span class="tok">#bebdde · --secondary-color</span><span class="use">확인 모달 1차 버튼, 진행바 시작색</span></span></div>
-          <div class="sw"><span class="chip" style="background:rgba(92,91,173,0.7)"></span><span class="info"><span class="name">Primary 70%</span><span class="tok">rgba(92,91,173,.7)</span><span class="use">게임 방 플레이어 번호 배지</span></span></div>
-          <div class="sw"><span class="chip" style="background:rgba(92,91,173,0.5)"></span><span class="info"><span class="name">Primary 50%</span><span class="tok">rgba(92,91,173,.5)</span><span class="use">인풋 focus outline</span></span></div>
+        <h3>3.1 행간 공식 <span class="src ds">디자인 토큰</span></h3>
+        <div class="note" style="font-size:15px">
+          <strong>Line Height = 폰트 사이즈 + 8</strong> &nbsp;/&nbsp; <strong>35 이상은 + 15</strong>
         </div>
+        <p>
+          타이포 스타일 20종 전체가 이 하나의 공식으로 생성됩니다 —
+          <code>13 → 21</code>, <code>16 → 24</code>, <code>24 → 32</code>,
+          그리고 큰 크기는 <code>35 → 50</code>, <code>40 → 55</code>.
+          사이즈마다 행간을 따로 정하지 않아도 되므로 <strong>스케일을 확장해도 일관성이 깨지지 않습니다.</strong>
+        </p>
 
-        <h3>3.2 다크 서피스</h3>
-        <div class="swatches">
-          <div class="sw"><span class="chip" style="background:#050b15"></span><span class="info"><span class="name">Header Night</span><span class="tok">#050b15</span><span class="use">글로벌 헤더, 게임 방법 인트로 섹션</span></span></div>
-          <div class="sw"><span class="chip" style="background:#111111"></span><span class="info"><span class="name">Ink</span><span class="tok">#111111 · --text-black</span><span class="use">캠 설정 페이지 배경, 타이머, 해시태그 배지</span></span></div>
-          <div class="sw"><span class="chip" style="background:#1c232f"></span><span class="info"><span class="name">Rank Navy</span><span class="tok">#1c232f</span><span class="use">랭킹 페이지네이션 활성 페이지 원</span></span></div>
-          <div class="sw"><span class="chip" style="background:#000000"></span><span class="info"><span class="name">Black</span><span class="tok">#000000</span><span class="use">사망 플레이어 캠 차단 오버레이</span></span></div>
-        </div>
-
-        <h3>3.3 라이트 서피스</h3>
-        <div class="swatches">
-          <div class="sw"><span class="chip" style="background:#ffffff; border-bottom:1px solid #e9e9e9"></span><span class="info"><span class="name">White</span><span class="tok">#ffffff · --white</span><span class="use">폼 카드 · 모달 · 방 카드 배경</span></span></div>
-          <div class="sw"><span class="chip" style="background:#f9f9fb"></span><span class="info"><span class="name">Gray 50</span><span class="tok">#f9f9fb</span><span class="use">랭킹 테이블 헤더 행</span></span></div>
-          <div class="sw"><span class="chip" style="background:#eeeeee"></span><span class="info"><span class="name">Footer Gray</span><span class="tok">#eeeeee · --footer-background-color</span><span class="use">푸터 배경, 취소 버튼, 진행바 트랙</span></span></div>
-          <div class="sw"><span class="chip" style="background:#e9e9e9"></span><span class="info"><span class="name">Gray 100</span><span class="tok">#e9e9e9</span><span class="use">랭킹 테이블 행 구분선</span></span></div>
-        </div>
-
-        <h3>3.4 텍스트 · 보더 그레이</h3>
-        <div class="swatches">
-          <div class="sw"><span class="chip" style="background:#747474"></span><span class="info"><span class="name">Form Gray</span><span class="tok">#747474</span><span class="use">폼 라벨 · 보조 안내 — 비토큰 중 최다</span></span></div>
-          <div class="sw"><span class="chip" style="background:#7a7986"></span><span class="info"><span class="name">Table Gray</span><span class="tok">#7a7986</span><span class="use">문의 폼 라벨, 랭킹 헤더 텍스트</span></span></div>
-          <div class="sw"><span class="chip" style="background:#838383"></span><span class="info"><span class="name">Modal Label</span><span class="tok">#838383 · --modal-title-color</span><span class="use">방 만들기 모달 필드 라벨</span></span></div>
-          <div class="sw"><span class="chip" style="background:#bfbfbf"></span><span class="info"><span class="name">Silver Gray</span><span class="tok">#bfbfbf · --silver-gray</span><span class="use">비활성 버튼 · 인풋 보더 · placeholder</span></span></div>
-          <div class="sw"><span class="chip" style="background:#d3d3d3"></span><span class="info"><span class="name">Gray 200</span><span class="tok">#d3d3d3</span><span class="use">검색 · 문의 인풋 보더</span></span></div>
-        </div>
-
-        <h3>3.5 시맨틱 · 오버레이</h3>
-        <div class="swatches">
-          <div class="sw"><span class="chip" style="background:#e72424"></span><span class="info"><span class="name">Error</span><span class="tok">#e72424 · --variation-error</span><span class="use">유효성 에러, 필수 표시, 방장 게임시작 버튼</span></span></div>
-          <div class="sw"><span class="chip" style="background:#4285f4"></span><span class="info"><span class="name">Rank Blue</span><span class="tok">#4285f4</span><span class="use">랭킹 1 · 2 · 3위 순위 숫자</span></span></div>
-          <div class="sw"><span class="chip" style="background:rgba(0,0,0,0.5)"></span><span class="info"><span class="name">Dim 50%</span><span class="tok">rgba(0,0,0,.5)</span><span class="use">모달 백드롭 표준, 역할 카드 오버레이</span></span></div>
-          <div class="sw"><span class="chip" style="background:rgba(0,0,0,0.7)"></span><span class="info"><span class="name">Dim 70%</span><span class="tok">rgba(0,0,0,.7)</span><span class="use">방 카드 hover 딤, playing 상태 딤</span></span></div>
-        </div>
-      </section>
-
-      <section id="s4">
-        <h2><span class="no">4.</span>타이포그래피</h2>
-
-        <h3>4.1 폰트 패밀리</h3>
+        <h3>3.2 폰트 패밀리</h3>
         <div class="tablewrap">
           <table>
             <thead><tr><th>패밀리</th><th>역할</th><th>사용처</th></tr></thead>
@@ -498,220 +554,244 @@
               <tr>
                 <td><strong class="font-designer" style="font-size:20px">Designer</strong></td>
                 <td>디스플레이 전용</td>
-                <td>인트로 히어로(60px) · 게임 방법 패럴랙스(64px) · 로딩 화면(35px) 3곳. 로고는 폰트가 아닌 SVG</td>
+                <td>인트로 히어로(60px) · 게임 방법 패럴랙스(64px) · 로딩 화면(35px). 로고는 폰트가 아닌 SVG</td>
               </tr>
             </tbody>
           </table>
         </div>
 
-        <h3>4.2 타입 스케일</h3>
-        <div class="type-row">
-          <span class="type-meta"><b>Hero</b> · Designer · 60px<br />모바일 32px</span>
-          <span class="type-sample font-designer" style="font-size:52px">ICECRAFT</span>
-        </div>
-        <div class="type-row">
-          <span class="type-meta"><b>Display</b> · Designer · 64px<br />게임 방법 패럴랙스</span>
-          <span class="type-sample font-designer" style="font-size:40px">MAFIA GAME</span>
-        </div>
-        <div class="type-row">
-          <span class="type-meta"><b>Content</b> · 35px<br /><code>--font-size-content</code></span>
-          <span class="type-sample" style="font-size:35px; font-weight:700">01:00</span>
-        </div>
-        <div class="type-row">
-          <span class="type-meta"><b>Form Title</b> · 32px · 700<br />로그인 · 회원가입 제목</span>
-          <span class="type-sample" style="font-size:32px; font-weight:700">회원가입</span>
-        </div>
-        <div class="type-row">
-          <span class="type-meta"><b>Title</b> · 20px · 700<br /><code>--font-size-title</code> · 최다</span>
-          <span class="type-sample" style="font-size:20px; font-weight:700">현재 활성화 되어있는 방</span>
-        </div>
-        <div class="type-row">
-          <span class="type-meta"><b>Modal Title</b> · 18px<br /><code>--font-size-modal-title</code></span>
-          <span class="type-sample" style="font-size:18px; font-weight:700">밤이 되었습니다</span>
-        </div>
-        <div class="type-row">
-          <span class="type-meta"><b>Modal Body</b> · 16px<br /><code>--font-size-modal-content</code></span>
-          <span class="type-sample" style="font-size:16px">마피아일 것 같은 사람의 화면을 클릭하세요.</span>
-        </div>
-        <div class="type-row">
-          <span class="type-meta"><b>Small</b> · 14px<br /><code>--font-size-small</code> · 보조 표준</span>
-          <span class="type-sample" style="font-size:14px; color:var(--muted)">비밀번호는 6~20자로 입력해주세요.</span>
+        <h3>3.3 타입 스케일 <span class="src ds">디자인 토큰</span></h3>
+        <div class="tablewrap">
+          <table>
+            <thead><tr><th>웨이트</th><th class="num">CSS</th><th>사이즈 / 행간</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Bold</strong></td><td class="num">700</td><td><code>35/50</code> · <code>32/40</code> · <code>24/32</code> · <code>16/24</code></td></tr>
+              <tr><td><strong>SemiBold</strong></td><td class="num">600</td><td><code>20/28</code> · <code>16/24</code> · <code>15/23</code></td></tr>
+              <tr><td><strong>Medium</strong></td><td class="num">500</td><td><code>40/55</code> · <code>35/50</code> · <code>25/33</code> · <code>23/31</code> · <code>20/28</code> · <code>16/24</code></td></tr>
+              <tr><td><strong>Regular</strong></td><td class="num">400</td><td><code>24/32</code> · <code>20/28</code> · <code>16/24</code> · <code>14/22</code> · <code>13/21</code> · <code>12/20</code></td></tr>
+            </tbody>
+          </table>
         </div>
 
-        <h3>4.3 웨이트 · 행간</h3>
-        <ul>
-          <li><strong>웨이트는 사실상 2단계</strong>입니다 — <code>700</code>(<code>--font-bold</code>, 제목 · 버튼 · 강조 전반)과 <code>400</code>(본문). 랭킹 테이블에서만 <code>600</code>을 예외로 씁니다.</li>
-          <li><strong>행간은 전역 기본값 없이</strong> 컴포넌트별로 지정합니다. 버튼 · 테이블 행처럼 한 줄을 수직 정렬해야 하는 곳은 높이와 같은 px 값(예: 48px 버튼에 <code>line-height: 48px</code>)을, 게임 방법 본문처럼 여러 줄을 읽는 곳은 <code>42px</code>(20px 기준 약 2.1배)를 씁니다.</li>
-        </ul>
+        <div class="type-row">
+          <span class="type-meta"><b>Display</b> · 40/55</span>
+          <span class="type-sample" style="font-size:40px; line-height:55px; font-weight:500">IceCraft</span>
+        </div>
+        <div class="type-row">
+          <span class="type-meta"><b>Content</b> · 35/50</span>
+          <span class="type-sample" style="font-size:35px; line-height:50px; font-weight:700">01:00</span>
+        </div>
+        <div class="type-row">
+          <span class="type-meta"><b>Form Title</b> · 32/40</span>
+          <span class="type-sample" style="font-size:32px; line-height:40px; font-weight:700">회원가입</span>
+        </div>
+        <div class="type-row">
+          <span class="type-meta"><b>Section</b> · 25/33</span>
+          <span class="type-sample" style="font-size:25px; line-height:33px; font-weight:500">현재 활성화 되어있는 방</span>
+        </div>
+        <div class="type-row">
+          <span class="type-meta"><b>Title</b> · 20/28</span>
+          <span class="type-sample" style="font-size:20px; line-height:28px; font-weight:700">밤이 되었습니다</span>
+        </div>
+        <div class="type-row">
+          <span class="type-meta"><b>Body</b> · 16/24</span>
+          <span class="type-sample" style="font-size:16px; line-height:24px">마피아일 것 같은 사람의 화면을 클릭하세요.</span>
+        </div>
+        <div class="type-row">
+          <span class="type-meta"><b>Small</b> · 14/22</span>
+          <span class="type-sample" style="font-size:14px; line-height:22px; color:var(--muted)">비밀번호는 6~20자로 입력해주세요.</span>
+        </div>
+        <div class="type-row">
+          <span class="type-meta"><b>Caption</b> · 12/20</span>
+          <span class="type-sample" style="font-size:12px; line-height:20px; color:var(--muted)">copyright ⓒ 2024 by 5.6.</span>
+        </div>
+
+        <h3>3.4 구현 운용 <span class="src impl">구현 규격</span></h3>
+        <p>
+          디자인 토큰의 스케일을 그대로 쓰되, <strong>실제 화면에서 필요한 크기만 CSS 변수로 승격</strong>했습니다.
+          토큰을 전부 변수로 옮기면 쓰지 않는 값이 늘어나므로, 사용처가 확실한 6개만 남겼습니다.
+        </p>
+        <div class="tablewrap">
+          <table>
+            <thead><tr><th>CSS 변수</th><th class="num">값</th><th>사용처</th></tr></thead>
+            <tbody>
+              <tr><td><code>--font-size-content</code></td><td class="num">35px</td><td>게임 타이머 · 404 본문 · 로딩 화면</td></tr>
+              <tr><td><code>--font-size-title</code></td><td class="num">20px</td><td>섹션 · 카드 타이틀 — 최다 사용</td></tr>
+              <tr><td><code>--font-size-modal-title</code></td><td class="num">18px</td><td>모달 소제목 · 입장 버튼 — 20과 16 사이가 필요해 구현에서 추가</td></tr>
+              <tr><td><code>--font-size-modal-content</code></td><td class="num">16px</td><td>모달 본문</td></tr>
+              <tr><td><code>--font-size-small</code></td><td class="num">14px</td><td>보조 텍스트 표준 — 라벨 · 배지 · 메시지</td></tr>
+              <tr><td><code>--font-size-base</code></td><td class="num">16px</td><td>본문 기본 크기</td></tr>
+              <tr><td><code>--font-bold</code></td><td class="num">700</td><td>제목 · 버튼 · 강조</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="note">
+          <strong>웨이트는 2단계로 운용합니다.</strong>
+          본문 <code>400</code>, 제목 · 버튼 · 강조 <code>700</code>(<code>--font-bold</code>).
+          게임 서비스 특성상 화면당 정보 밀도가 높아, 웨이트를 잘게 나누는 대신
+          <strong>크기와 색으로 위계를 만드는 편이 읽기 쉽다</strong>고 판단했습니다.
+        </div>
       </section>
 
-      <section id="s5">
-        <h2><span class="no">5.</span>컴포넌트</h2>
+      <section id="s4">
+        <h2><span class="no">4.</span>컴포넌트 <span class="src impl">구현 규격</span></h2>
 
-        <h3>5.1 버튼</h3>
+        <h3>4.1 Header</h3>
+        <div class="canvas" style="padding:0; overflow:hidden">
+          <div class="c-header">
+            <span class="logo">IceCraft</span>
+            <span class="nav"><span>게임 방법</span><span>랭킹</span><span>문의</span><span>로그인</span></span>
+          </div>
+        </div>
+        <p class="muted" style="font-size:14px">
+          배경 <code>#050b15</code> 고정 · 최대 폭 <code>1920px</code> · 패딩 <code>21px 30px</code> · 메뉴 간격 <code>20px</code>.
+          768px 이하에서는 <code>position: fixed</code>로 전환하고 햄버거(30×2px 바 3개)를 노출하며,
+          메뉴는 <code>rgba(0,0,0,.8)</code> 전면 오버레이로 <code>0.3s ease-out</code> 슬라이드됩니다.
+        </p>
+
+        <h3>4.2 Button</h3>
         <div class="canvas">
           <div class="canvas-label">Buttons</div>
           <div class="row">
             <span class="btn btn-primary">＋ 방 만들기</span>
             <span class="btn btn-invert">게임 입장</span>
-            <span class="btn btn-light" style="border-color:#e9e9e9">Game Start</span>
-            <span class="btn btn-inactive">회원가입</span>
+            <span class="btn btn-secondary">찬성</span>
+            <span class="btn btn-disabled">회원가입</span>
+            <span class="btn btn-chief">게임시작</span>
           </div>
           <div class="row" style="margin-top:14px">
-            <span class="btn btn-inactive btn-ready">게임 준비</span>
-            <span class="btn btn-primary btn-ready">준비 완료</span>
-            <span class="btn btn-chief btn-ready">게임시작</span>
+            <span class="btn btn-primary btn-cta">로그인</span>
+            <span class="btn btn-disabled btn-cta">로그인</span>
           </div>
           <p class="cap">
-            Primary(<code>#5c5bad</code>)가 주요 액션, 같은 색 반전형이 보조 액션입니다.
-            비활성은 <code>#bfbfbf</code>로 통일하며, <strong>방장 전용 게임시작만 에러 레드(<code>#e72424</code>)</strong>를 써서
-            되돌릴 수 없는 액션임을 구분합니다. 라디우스는 모두 8px, CTA 패딩은 <code>16px 0</code>(전폭) 또는 <code>12px 24px</code>입니다.
+            기본형은 <code>Main</code> 채움에 흰 텍스트, 라디우스 8px, 웨이트 700입니다.
+            전폭 CTA는 <code>padding: 16px 0</code>, 인라인 버튼은 <code>12px 24px</code>.
+            비활성은 <code>UIText/PlaceHolder</code>로 통일하고,
+            <strong>되돌릴 수 없는 액션(방장 게임시작)만 <code>UIText/Error</code></strong>를 예외로 씁니다.
+            hover는 <code>filter: brightness(1.15)</code> 또는 <code>0.3s ease-out</code> 배경 전환입니다.
           </p>
         </div>
 
-        <h3>5.2 입력 필드</h3>
+        <h3>4.3 Game Card</h3>
         <div class="canvas">
-          <div class="canvas-label">Inputs</div>
+          <div class="canvas-label">Game card — 기본 / 게임 중</div>
           <div class="row top">
-            <div>
-              <span class="f-label">이메일</span>
-              <div class="field focus" style="color:#111111">icecraft@example.com</div>
-              <div class="f-msg n">폼 인풋 · radius 4px · 보더 #bfbfbf</div>
-            </div>
-            <div>
-              <span class="f-label">비밀번호</span>
-              <div class="field err" style="color:#111111">abc</div>
-              <div class="f-msg e">비밀번호는 6~20자로 입력해주세요.</div>
-            </div>
-            <div>
-              <span class="f-label modal">방 제목</span>
-              <div class="field r8">방 이름을 입력해 주세요.</div>
-              <div class="f-msg n">검색 · 문의 인풋 · radius 8px · 보더 #d3d3d3</div>
-            </div>
-          </div>
-          <p class="cap">
-            포커스는 보더 대신 <code>outline 1px solid rgba(92,91,173,.5)</code>로 표현합니다.
-            라벨은 14px이며 폼은 <code>#747474</code>, 모달은 <code>#838383</code>을 씁니다.
-          </p>
-        </div>
-
-        <h3>5.3 배지</h3>
-        <div class="canvas">
-          <div class="canvas-label">Badges</div>
-          <div class="row">
-            <span class="pill pill-tag"># 마피아</span>
-            <span class="pill pill-count">👤 3 / 6</span>
-            <span class="num-badge">1</span>
-            <span class="rank-badge">2</span>
-            <span class="tooltip-badge">icecraft@example.com</span>
-          </div>
-          <p class="cap">
-            방 카드 pill은 <code>radius 30px · padding 5px 12px · 14px</code>으로 공통이며 배경색으로만 종류를 구분합니다
-            (해시태그 <code>#111111</code> / 인원 <code>#5c5bad</code>).
-            게임 방 플레이어 번호는 <code>radius 4px</code> 반투명 퍼플, 랭킹 페이지 번호는 원형(<code>50%</code>)입니다.
-          </p>
-        </div>
-
-        <div class="canvas dark">
-          <div class="canvas-label">Game timer</div>
-          <div class="timer-badge">00:57</div>
-          <p class="cap">게임 타이머는 180×68px, <code>#111111</code> 배경에 흰 테두리 20%, 35px 숫자로 화면 상단 중앙에 고정됩니다.</p>
-        </div>
-
-        <h3>5.4 방 카드</h3>
-        <div class="canvas">
-          <div class="canvas-label">Room card</div>
-          <div class="row top">
-            <div class="room-card">
+            <div class="c-card">
               <div class="thumb">THUMBNAIL</div>
-              <div class="rt">
+              <div class="body">
                 <h5>방 제목</h5>
-                <div class="gname">
+                <div class="meta">
                   <span class="pill pill-tag"># 마피아</span>
-                  <span class="pill pill-count">3 / 6</span>
+                  <span class="pill pill-count">👤 3 / 6</span>
                 </div>
               </div>
             </div>
-            <div class="room-card">
+            <div class="c-card">
               <div class="thumb">THUMBNAIL</div>
-              <div class="rt">
+              <div class="body">
                 <h5>게임 중인 방</h5>
-                <div class="gname">
+                <div class="meta">
                   <span class="pill pill-tag"># 마피아</span>
                   <span class="pill pill-count">6 / 6</span>
                 </div>
               </div>
-              <div class="playing">playing</div>
+              <div class="dim">playing</div>
+            </div>
+            <div style="align-self:center">
+              <span class="btn btn-enter">입장하기</span>
+              <p class="cap" style="margin-top:8px; max-width:120px">hover 시 노출</p>
             </div>
           </div>
           <p class="cap">
-            실제 폭은 370px이며 <code>radius 8px</code>, 그림자는 <code>4px 4px 10px rgba(0,0,0,.25)</code>로 우하단 광원을 씁니다.
-            제목은 20px/700에 아래 여백 28px, 본문 패딩은 <code>20px 15px</code>입니다.
-            마우스를 올리면 70% 딤과 함께 입장하기 버튼(120×48px)이 나타나고, 게임 중인 방은 같은 딤 위에 playing 상태를 표시합니다.
+            실제 폭 <code>370px</code> · 라디우스 8px · 그림자 <code>4px 4px 10px rgba(0,0,0,.25)</code>로 우하단 광원 고정.
+            제목 20px/700에 아래 여백 28px, 본문 패딩 <code>20px 15px</code>, 카드 간격 125px.
+            hover 시 <code>rgba(0,0,0,.7)</code> 딤과 함께 입장 버튼(120×48)이 나타나고,
+            게임 중인 방은 같은 딤 위에 자간 3px의 <code>playing</code>을 표시합니다.
+            배지는 라디우스 30px · 패딩 <code>5px 12px</code> · 14px 공통이며 배경색으로만 종류를 구분합니다.
           </p>
         </div>
 
-        <h3>5.5 모달</h3>
+        <h3>4.4 Cam</h3>
         <div class="canvas dark">
-          <div class="canvas-label">Modal on dim 50%</div>
-          <div class="row top">
-            <div class="modal-demo">
-              <div class="mt">투표하시겠습니까?</div>
-              <div class="md">찬성이 많으면 처형됩니다.</div>
-              <div class="ma">
-                <span class="btn btn-secondary">찬성</span>
-                <span class="btn btn-cancel">반대</span>
-              </div>
-            </div>
-            <div class="modal-demo">
-              <div class="mt">게임을 선택해 주세요</div>
-              <span class="f-label modal" style="text-align:left">방 제목</span>
-              <div class="field r8" style="min-width:0; width:100%">방 제목을 입력해 주세요.</div>
-              <div class="ma">
-                <span class="btn btn-primary">확인</span>
-                <span class="btn btn-outline-gray">닫기</span>
-              </div>
-            </div>
+          <div class="canvas-label">Participant cam</div>
+          <div style="width:240px; height:150px; border:1px solid rgba(255,255,255,.3); border-radius:8px; position:relative; background:#1c232f">
+            <span style="position:absolute; left:10px; bottom:10px; background:rgba(92,91,173,.7); color:#fff; border-radius:4px; padding:2px 10px; font-size:14px">1</span>
           </div>
           <p class="cap">
-            백드롭은 <code>rgba(0,0,0,.5)</code> 공통입니다. 확인/취소 버튼 쌍은 각 50% 폭에 20px 간격이며,
-            1차 버튼은 <code>#bebdde</code>에서 hover 시 <code>#5c5bad</code>로 짙어집니다.
-            방 만들기 모달만 <code>radius 12px</code>를 쓰고, 게임 진행 모달은 배경이 SVG 일러스트(865×506)라 색 토큰을 쓰지 않습니다.
+            참가자 캠은 라디우스 8px에 <code>rgba(255,255,255,.3)</code> 테두리를 둘러 어두운 배경에서도 경계를 유지합니다.
+            플레이어 번호는 <code>Main 70%</code> 반투명 배지(라디우스 4px)로, 영상 위에서도 읽히도록 했습니다.
+            사망 시에는 캠 전체를 검정 오버레이로 차단합니다.
           </p>
         </div>
 
-        <h3>5.6 진행바</h3>
+        <h3>4.5 ToolTip · CheckBox</h3>
         <div class="canvas">
-          <div class="canvas-label">Progress</div>
-          <progress class="progress-demo" value="62" max="100"></progress>
+          <div class="canvas-label">ToolTip / CheckBox</div>
+          <div class="row gap28" style="align-items:flex-start; padding-bottom:12px">
+            <span class="c-tooltip">icecraft@example.com</span>
+            <span class="c-check"><i></i> 이메일 저장</span>
+          </div>
           <p class="cap">
-            사회자 안내 모달의 남은 시간 표시입니다. 트랙은 <code>#eee</code>에 안쪽 그림자,
-            값은 <code>#bebdde → #5c5bad</code> 그라데이션에 <code>radius 10px</code>입니다.
+            툴팁은 높이 40px · 패딩 <code>0 15px</code> · <code>Main</code> 배경에 꼬리를 붙여 대상 위 55px 지점에 띄웁니다.
+            랭킹 표에서 잘린 이메일을 hover로 확인할 때 씁니다.
+            체크박스는 15×15px에 라벨과 5px 간격, 라벨은 14px <code>#747474</code>입니다.
           </p>
         </div>
 
-        <h3>5.7 토스트</h3>
-        <div class="note">
-          토스트는 <strong>react-toastify 기본 스타일을 그대로 사용</strong>합니다 (좌측 상단 · 1초 자동 닫힘).
-          브랜드 컬러가 적용되지 않은 유일한 컴포넌트로, 커스터마이즈는 <a href="#s8" style="color:var(--accent)">§8</a>의 정리 대상입니다.
+        <h3>4.6 Footer</h3>
+        <div class="canvas" style="padding:0; overflow:hidden">
+          <div class="c-footer">
+            <span style="font-weight:700">IceCraft</span>
+            <span>서울특별시 · <a href="#s4">문의하기</a></span>
+            <span>© 2026 IceCraft</span>
+          </div>
         </div>
+        <p class="muted" style="font-size:14px">
+          배경 <code>#eeeeee</code> · 최대 폭 <code>1920px</code> · 패딩 <code>21px 30px</code> · 본문 14px.
+          링크만 <code>Main</code>으로 강조하고, 768px 이하에서는 세로 배치(간격 20px)로 전환합니다.
+        </p>
+
+        <h3>4.7 Icon</h3>
+        <div class="canvas">
+          <div class="canvas-label">Icon — Material Symbols</div>
+          <div class="c-icons">
+            <span class="ic"><b style="width:24px; height:24px"></b>24</span>
+            <span class="ic"><b style="width:28px; height:28px"></b>28</span>
+            <span class="ic"><b style="width:36px; height:36px"></b>36</span>
+            <span class="ic"><b style="width:45px; height:45px"></b>45</span>
+          </div>
+          <p class="cap">
+            아이콘은 <strong>Material Symbols</strong>를 기반으로 하며 <code>Outlined</code>와 <code>Round</code> 두 스타일을 씁니다.
+            방향 표시(<code>keyboard_arrow_*</code>)는 24px, 캠 컨트롤(<code>mic</code> · <code>videocam</code>)은 36px,
+            상담 · 안내(<code>support_agent</code>)는 45px처럼 <strong>용도에 맞춰 크기를 지정</strong>하는 방식입니다.
+            서비스에서는 SVG 자산으로 임포트해 렌더링합니다.
+          </p>
+        </div>
+        <p class="muted" style="font-size:14px">
+          크기를 고정 단계로 묶지 않고 용도별로 지정한 결과, 현재 <code>24 · 28 · 36 · 45px</code>가 함께 쓰이고 있습니다.
+          정규화는 <a href="#s6" style="color:var(--accent)">§6</a>의 과제로 잡아두었습니다.
+        </p>
       </section>
 
-      <section id="s6">
-        <h2><span class="no">6.</span>라디우스 · 섀도 · 스페이싱</h2>
+      <section id="s5">
+        <h2><span class="no">5.</span>레이아웃 · 반응형</h2>
 
-        <h3>6.1 라디우스</h3>
-        <div class="radius-row">
-          <div class="radius-item"><div class="radius-box" style="border-radius:4px"></div><span>4px<br />인풋 · 번호 배지</span></div>
-          <div class="radius-item"><div class="radius-box" style="border-radius:8px"></div><span>8px · 표준<br />버튼 · 카드 · 대부분</span></div>
-          <div class="radius-item"><div class="radius-box" style="border-radius:12px"></div><span>12px<br />방 만들기 모달</span></div>
-          <div class="radius-item"><div class="radius-box" style="border-radius:24px"></div><span>24px<br />로그인 폼 카드</span></div>
-          <div class="radius-item"><div class="radius-box" style="border-radius:30px"></div><span>30px<br />pill 배지</span></div>
-          <div class="radius-item"><div class="radius-box" style="border-radius:50%"></div><span>50%<br />페이지 번호</span></div>
+        <h3>5.1 라디우스</h3>
+        <div class="tablewrap">
+          <table>
+            <thead><tr><th class="num">값</th><th>대상</th></tr></thead>
+            <tbody>
+              <tr><td class="num">4px</td><td>폼 인풋 · 플레이어 번호 배지</td></tr>
+              <tr><td class="num"><strong>8px</strong> — <code>--border-radius</code></td><td>버튼 · 카드 · 캠 · 툴팁 · 검색 — <strong>기준값</strong></td></tr>
+              <tr><td class="num">12px</td><td>방 만들기 모달</td></tr>
+              <tr><td class="num">24px</td><td>로그인 · 회원가입 폼 카드</td></tr>
+              <tr><td class="num">30px</td><td>pill 배지</td></tr>
+              <tr><td class="num">50%</td><td>페이지 번호 · 아바타</td></tr>
+            </tbody>
+          </table>
         </div>
-        <p class="muted" style="font-size:14px">8px가 전체의 대부분을 차지하는 기준값이고, 나머지는 용도별 예외입니다.</p>
 
-        <h3>6.2 섀도</h3>
+        <h3>5.2 섀도</h3>
         <div class="canvas">
           <div class="canvas-label">Elevation — 전체 3종</div>
           <div class="row">
@@ -719,88 +799,120 @@
             <div style="width:168px; height:78px; background:#fff; border-radius:5px; box-shadow:1px 1px 3px 1px rgba(0,0,0,.5); display:flex; align-items:center; justify-content:center; font-size:12.5px; color:#747474; text-align:center">공지 팝업<br />1px 1px 3px 1px 50%</div>
             <div style="width:168px; height:78px; background:#eee; border-radius:8px; box-shadow:inset 3px 3px 10px #ccc; display:flex; align-items:center; justify-content:center; font-size:12.5px; color:#747474; text-align:center">진행바 트랙<br />inset 3px 3px 10px</div>
           </div>
-          <p class="cap">모두 우하단 방향 오프셋을 써서 광원을 한 방향으로 고정했습니다. 모달 · 헤더에는 그림자를 쓰지 않습니다.</p>
+          <p class="cap">모두 우하단 방향 오프셋으로 광원을 한 방향에 고정했습니다. 모달과 헤더에는 그림자를 쓰지 않습니다.</p>
         </div>
 
-        <h3>6.3 스페이싱</h3>
+        <h3>5.3 스페이싱 · 기준 폭</h3>
         <div class="tablewrap">
           <table>
             <thead><tr><th class="num">값</th><th>용도</th></tr></thead>
             <tbody>
               <tr><td class="num">5 · 10 · 15px</td><td>아이콘 ↔ 라벨, 배지 내부, 인풋 패딩(<code>10px 15px</code>)</td></tr>
-              <tr><td class="num">20 · 30px</td><td>버튼 쌍 간격, 폼 필드 간격, 컨테이너 좌우 여백(데스크톱 30px)</td></tr>
-              <tr><td class="num">50 · 80px</td><td>모달 · 폼 카드 내부 여백 (모바일 <code>50px 20px</code>)</td></tr>
+              <tr><td class="num">20 · 30px</td><td>버튼 쌍 간격, 폼 필드 간격, 컨테이너 좌우 여백</td></tr>
+              <tr><td class="num">50 · 80px</td><td>모달 · 폼 카드 내부 여백</td></tr>
+              <tr><td class="num">1920px</td><td>페이지 최대 폭 — <code>--max-width</code></td></tr>
+              <tr><td class="num">1136 · 700px</td><td>랭킹 표 · 문의 폼</td></tr>
+              <tr><td class="num">454px</td><td>인풋 · CTA 기준 폭</td></tr>
+              <tr><td class="num">370 · 302px</td><td>방 카드 · 방 만들기 폼</td></tr>
             </tbody>
           </table>
         </div>
-        <p>간격은 5px 배수 체계(5 · 10 · 15 · 20 · 30)를 따릅니다. 반응형 기준점은 <strong>768px</strong>이 실질 표준이며, 전환에는 <code>0.3s ease-out</code>을 씁니다.</p>
+        <p>간격은 5px 배수 체계(5 · 10 · 15 · 20 · 30)를 따릅니다. 반응형 기준점은 <strong>768px</strong> 단일이며, 전환에는 <code>0.3s ease-out</code>을 씁니다.</p>
 
-        <h3>6.4 기준 폭</h3>
+        <h3>5.4 테마 운용</h3>
+        <ul>
+          <li><strong>라이트 기반 + 몰입 영역만 다크</strong>인 하이브리드입니다. 방 목록 · 랭킹 · 문의 · 폼은 라이트, 헤더 · 게임 방 · 캠 설정 · 게임 방법 인트로는 다크로 갑니다.</li>
+          <li><strong>헤더는 항상 <code>#050b15</code></strong>로 고정해 라이트 화면에서도 브랜드 기준선을 유지하고, 푸터는 <code>#eeeeee</code>로 본문과 분리합니다.</li>
+          <li><strong>포인트 컬러는 화면당 한두 곳.</strong> <code>Main</code>은 주요 액션과 인원 배지에만 쓰고, 되돌릴 수 없는 액션에만 에러 레드를 예외로 허용합니다.</li>
+          <li><strong>게임 방의 낮/밤은 배경 이미지 교체</strong>로 표현합니다(대기 · 낮 · 밤 3종 AVIF). 색 오버레이가 아니라 이미지를 바꾸므로, 캠 위 정보는 어느 배경에서도 읽히도록 흰색 + 반투명 검정 레이어를 조합합니다.</li>
+          <li><strong>다크모드 대응은 하지 않습니다.</strong> <code>prefers-color-scheme</code> 대신 화면별로 테마를 고정합니다.</li>
+        </ul>
+      </section>
+
+      <section id="s6">
+        <h2><span class="no">6.</span>다음 단계</h2>
+        <p>시스템을 더 단단하게 만들기 위해 계획하고 있는 작업입니다.</p>
         <div class="tablewrap">
           <table>
-            <thead><tr><th class="num">폭</th><th>대상</th></tr></thead>
+            <thead><tr><th>항목</th><th>현재</th><th>계획</th></tr></thead>
             <tbody>
-              <tr><td class="num">1920px</td><td>페이지 최대 폭 (<code>--max-width</code>)</td></tr>
-              <tr><td class="num">1136px · 700px</td><td>랭킹 표 · 문의 폼</td></tr>
-              <tr><td class="num">454px</td><td>인풋 · CTA 기준 폭 (로그인 · 인트로 버튼)</td></tr>
-              <tr><td class="num">370px · 302px</td><td>방 카드 · 방 만들기 폼</td></tr>
+              <tr>
+                <td><strong>보조 텍스트 토큰화</strong></td>
+                <td><code>#747474</code>가 확장 팔레트에만 있고 CSS 변수로는 없음</td>
+                <td><code>--text-sub</code>로 <code>:root</code> 승격 + Figma에 <code>UIText/Sub</code> 추가해 양쪽 동기화</td>
+              </tr>
+              <tr>
+                <td><strong>행간 토큰 도입</strong></td>
+                <td>컴포넌트별로 px 지정</td>
+                <td><code>size + 8</code> 공식을 CSS 변수로 옮겨 스케일 전체를 한 규칙으로 생성</td>
+              </tr>
+              <tr>
+                <td><strong>웨이트 정리</strong></td>
+                <td>400 · 700 2단계 운용 중, <code>600</code>이 3곳에 잔존</td>
+                <td>잔여 3곳을 700으로 통합해 2단계 원칙 완전 적용</td>
+              </tr>
+              <tr>
+                <td><strong>인풋 규격 통일</strong></td>
+                <td>폼(radius 4px · <code>#bfbfbf</code>)과 검색 · 문의(8px · <code>#d3d3d3</code>)가 이원화</td>
+                <td>8px + 단일 보더 색으로 통일</td>
+              </tr>
+              <tr>
+                <td><strong>아이콘 크기 정규화</strong></td>
+                <td>용도별로 지정해 <code>24 · 28 · 36 · 45px</code>가 혼재</td>
+                <td><code>16 · 24 · 32 · 40</code> 4단계로 묶고 <code>Outlined</code> · <code>Round</code> 중 한 스타일로 통일</td>
+              </tr>
+              <tr>
+                <td><strong>토스트 커스터마이즈</strong></td>
+                <td>react-toastify 기본 스타일</td>
+                <td><code>Main</code> 기반 커스텀 테마 적용 — 브랜드 컬러가 닿지 않은 유일한 컴포넌트</td>
+              </tr>
+              <tr>
+                <td><strong>Figma Variables 전환</strong></td>
+                <td>네임드 스타일로 관리 (수동 대조)</td>
+                <td>Variables로 옮기면 디자인 → 코드 토큰 자동 내보내기 가능</td>
+              </tr>
             </tbody>
           </table>
         </div>
       </section>
 
       <section id="s7">
-        <h2><span class="no">7.</span>테마 운용 원칙</h2>
-        <ul>
-          <li><strong>라이트 기반 + 몰입 영역만 다크</strong>인 하이브리드입니다. 방 목록 · 랭킹 · 문의 · 폼은 라이트, 헤더 · 게임 방 · 캠 설정 · 게임 방법 인트로는 다크로 갑니다.</li>
-          <li><strong>헤더는 항상 <code>#050b15</code></strong>로 고정해 라이트 화면에서도 브랜드 기준선을 유지하고, 푸터는 <code>#eeeeee</code>로 본문과 분리합니다.</li>
-          <li><strong>포인트 컬러는 화면당 한두 곳.</strong> <code>#5c5bad</code>는 주요 액션과 인원 배지에만 쓰고, 되돌릴 수 없는 액션(방장 게임시작)에만 에러 레드를 예외로 허용합니다.</li>
-          <li><strong>게임 방의 낮/밤은 배경 이미지 교체</strong>로 표현합니다(대기 · 낮 · 밤 3종 AVIF). 색 오버레이가 아니라 이미지 자체를 바꾸므로, 캠 위 정보는 어느 배경에서도 읽히도록 흰색 + 반투명 검정 레이어를 조합합니다.</li>
-          <li><strong>다크모드 대응은 하지 않습니다.</strong> <code>prefers-color-scheme</code>을 쓰지 않고 화면별로 테마를 고정합니다.</li>
-        </ul>
-      </section>
-
-      <section id="s8">
-        <h2><span class="no">8.</span>토큰 정리 로드맵</h2>
-        <p>As-Built 추출 과정에서 확인된, 다음 정리 단계에서 통일할 항목입니다.</p>
+        <h2><span class="no">7.</span>부록 — 디자인 진행 과정</h2>
+        <p>
+          이 디자인 시스템은 세 단계를 거쳐 정리되었습니다.
+        </p>
         <div class="tablewrap">
           <table>
-            <thead><tr><th>항목</th><th>현재</th><th>정리 방향</th></tr></thead>
+            <thead><tr><th class="num">단계</th><th>산출물</th><th>내용</th></tr></thead>
             <tbody>
               <tr>
-                <td>회색 계열 중복</td>
-                <td><code>#747474</code> · <code>#7a7986</code> · <code>#838383</code>이 사실상 같은 역할로 병존</td>
-                <td>보조 텍스트 그레이 1종으로 통합 후 토큰화</td>
+                <td class="num">01</td>
+                <td><strong>와이어프레임</strong></td>
+                <td>1728px 아트보드에 화면 48종의 배치와 기능 분기를 잡는 단계. 게임 방만 아침 · 밤 · 투표 · 찬반투표 · 사망 · 결과 등 17개 상태로 분기했습니다.</td>
               </tr>
               <tr>
-                <td>인풋 규격 이원화</td>
-                <td>radius 4px+<code>#bfbfbf</code>(폼) vs 8px+<code>#d3d3d3</code>(검색 · 문의)</td>
-                <td>8px + 단일 보더 색으로 통일</td>
+                <td class="num">02</td>
+                <td><strong>하이파이 시안</strong></td>
+                <td>1920px 기준으로 전 화면을 시각화하고, 인풋 5개 상태 · 직업카드 · 모달 케이스를 별도 보드로 정리했습니다.</td>
               </tr>
               <tr>
-                <td>토스트 미커스텀</td>
-                <td>라이브러리 기본 색상 노출</td>
-                <td>브랜드 퍼플 기반 커스텀 테마 적용</td>
-              </tr>
-              <tr>
-                <td>행간 토큰 부재</td>
-                <td>대부분 높이와 같은 px 값으로 수직 정렬</td>
-                <td>본문 · 제목용 배수 행간 토큰 도입</td>
-              </tr>
-              <tr>
-                <td>미사용 토큰</td>
-                <td><code>--font-size-base</code> 정의만 존재</td>
-                <td>본문 기본 크기로 실제 적용하거나 제거</td>
+                <td class="num">03</td>
+                <td><strong>디자인시스템</strong></td>
+                <td>컬러 6종과 타이포 20종을 스타일로 등록하고, 컴포넌트 보드 8종으로 재사용 단위를 확정했습니다. 이 문서의 토큰이 여기서 나왔습니다.</td>
               </tr>
             </tbody>
           </table>
         </div>
+        <p class="muted" style="font-size:14px">
+          구현 단계에서는 3단계의 토큰을 <code>:root</code> 변수로 옮기고,
+          실제 사용 빈도에 맞춰 스케일을 추리는 방식으로 시스템을 좁혔습니다.
+        </p>
       </section>
 
     </main>
 
     <footer class="doc">
-      <span>IceCraft 디자인 시안 · Seoyoung Park</span>
+      <span>IceCraft 디자인 시스템 · Seoyoung Park</span>
       <a href="/docs">← 문서 목록</a>
     </footer>
   </div>
