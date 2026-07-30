@@ -189,6 +189,7 @@
 }
 
 .sendInner label {
+  font-size: var(--font-size-small);
   color: #7a7986;
   margin: 30px 0 8px;
 }
@@ -203,7 +204,7 @@
 
 .sendInner input {
   border: 1px solid #d3d3d3;
-  padding: 8px 15px;
+  padding: 10px 15px;
   border-radius: var(--border-radius);
 }
 

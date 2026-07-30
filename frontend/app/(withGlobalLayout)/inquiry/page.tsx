@@ -78,6 +78,25 @@ const InquiryPage = () => {
     }
   };
 
+  // 한 번도 입력하지 않은 빈 칸은 blur만으로 지적하지 않고 전송 시점에 잡는다.
+  const emailBlurHandler = () => {
+    if (email.length > 0) {
+      setEmailMessage(validateEmail(email));
+    }
+  };
+
+  const titleBlurHandler = () => {
+    if (title.length > 0) {
+      setTitleMessage(validateTitle(title));
+    }
+  };
+
+  const contentBlurHandler = () => {
+    if (content.length > 0) {
+      setContentMessage(validateContent(content));
+    }
+  };
+
   const sendEmail = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -137,7 +156,7 @@ const InquiryPage = () => {
             placeholder="ex) abc@example.com"
             value={email}
             onChange={(e) => emailChangeHandler(e.target.value)}
-            onBlur={() => setEmailMessage(validateEmail(email))}
+            onBlur={emailBlurHandler}
             aria-invalid={emailMessage.length > 0}
             aria-describedby="user_email-message"
             autoFocus
@@ -157,7 +176,7 @@ const InquiryPage = () => {
             maxLength={TITLE_MAX_LENGTH}
             value={title}
             onChange={(e) => titleChangeHandler(e.target.value)}
-            onBlur={() => setTitleMessage(validateTitle(title))}
+            onBlur={titleBlurHandler}
             aria-invalid={titleMessage.length > 0}
             aria-describedby="title-message"
             required
@@ -174,7 +193,7 @@ const InquiryPage = () => {
             placeholder="내용을 입력해주세요."
             value={content}
             onChange={(e) => contentChangeHandler(e.target.value)}
-            onBlur={() => setContentMessage(validateContent(content))}
+            onBlur={contentBlurHandler}
             aria-invalid={contentMessage.length > 0}
             aria-describedby="message-message"
             required

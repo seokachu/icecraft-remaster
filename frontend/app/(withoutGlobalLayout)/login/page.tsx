@@ -111,6 +111,19 @@ const LogIn = () => {
     }
   };
 
+  // 한 번도 입력하지 않은 빈 칸은 blur만으로 지적하지 않고 전송 시점에 잡는다.
+  const emailBlurHandler = () => {
+    if (email.length > 0) {
+      setEmailMessage(validateEmail(email));
+    }
+  };
+
+  const passwordBlurHandler = () => {
+    if (password.length > 0) {
+      setPasswordMessage(validatePassword(password));
+    }
+  };
+
   const emailFocusHandler = () => {
     setErrorMessage([]);
   };
@@ -166,7 +179,7 @@ const LogIn = () => {
                 value={email}
                 onChange={(e) => emailChangeHandler(e.target.value)}
                 onFocus={emailFocusHandler}
-                onBlur={() => setEmailMessage(validateEmail(email))}
+                onBlur={emailBlurHandler}
                 aria-invalid={emailMessage.length > 0}
                 aria-describedby="email-message"
                 required
@@ -183,7 +196,7 @@ const LogIn = () => {
                 value={password}
                 onChange={(e) => passwordChangeHandler(e.target.value)}
                 onFocus={passwordFocusHandler}
-                onBlur={() => setPasswordMessage(validatePassword(password))}
+                onBlur={passwordBlurHandler}
                 aria-invalid={passwordMessage.length > 0}
                 aria-describedby="password-message"
                 required
