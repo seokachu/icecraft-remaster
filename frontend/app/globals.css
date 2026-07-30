@@ -5,6 +5,7 @@
 :root {
   --max-width: 1920px;
   --primary-color: #5c5bad;
+  --focus-outline-color: rgba(92, 91, 173, 0.5);
   --secondary-color: #bebdde;
   --header-background-color: #050b15;
   --footer-background-color: #eeeeee;

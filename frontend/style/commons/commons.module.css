@@ -208,13 +208,15 @@
   border-radius: var(--border-radius);
 }
 
-.sendInner input:focus {
-  outline: 1px solid var(--primary-color);
-  opacity: 0.5;
+/* opacity를 필드 전체에 걸면 입력한 텍스트까지 흐려지므로 placeholder만 연하게 한다. */
+.sendInner input:focus,
+.sendInner textarea:focus {
+  outline: 1px solid var(--focus-outline-color);
 }
 
-.sendInner input:placeholder {
-  color: #e9e9e9;
+.sendInner input:focus::placeholder,
+.sendInner textarea:focus::placeholder {
+  opacity: 0.5;
 }
 
 .sendInner textarea {

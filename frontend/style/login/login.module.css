@@ -65,7 +65,7 @@
 }
 
 .mainWrapper form .userform .userField > input:focus {
-  outline: 1px solid rgba(92, 91, 173, 0.5);
+  outline: 1px solid var(--focus-outline-color);
   color: #747474;
 }
 
