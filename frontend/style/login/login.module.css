@@ -43,22 +43,26 @@
   text-align: center;
 }
 
-.mainWrapper form .userform > p > label {
+.mainWrapper form .userform .userField {
+  margin-bottom: 25px;
+}
+
+.mainWrapper form .userform .userField > label {
   font-size: var(--font-size-small);
   color: #747474;
   width: 100%;
   display: block;
 }
 
-.mainWrapper form .userform > p > input {
+.mainWrapper form .userform .userField > input {
   width: 454px;
-  margin: 6px 0px 25px;
+  margin-top: 6px;
   padding: 10px 15px;
   border: 1px solid var(--silver-gray);
   border-radius: 4px;
 }
 
-.mainWrapper form .userform > p > input:focus {
+.mainWrapper form .userform .userField > input:focus {
   outline: 1px solid rgba(92, 91, 173, 0.5);
   color: #747474;
 }
@@ -100,6 +104,10 @@
   color: var(--white);
 }
 
+.loginButton:disabled {
+  background-color: var(--silver-gray);
+}
+
 .error {
   color: var(--variation-error);
   font-size: var(--font-size-small);
@@ -122,7 +130,7 @@
     padding: 50px 20px;
   }
 
-  .mainWrapper form .userform > p > input {
+  .mainWrapper form .userform .userField > input {
     width: 100%;
   }
 

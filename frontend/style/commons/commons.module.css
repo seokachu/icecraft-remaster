@@ -1,3 +1,16 @@
+/*-------------- InputMessage ----------------*/
+.error {
+  color: var(--variation-error);
+  font-size: var(--font-size-small);
+  margin: 8px 0 0 5px;
+}
+
+.success {
+  color: var(--primary-color);
+  font-size: var(--font-size-small);
+  margin: 8px 0 0 5px;
+}
+
 /*-------------- HEADER ----------------*/
 .headerWrap {
   background-color: var(--header-background-color);

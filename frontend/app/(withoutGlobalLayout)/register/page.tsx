@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { checkUserEmailRegistered } from "@/utils/supabase/accountAPI";
-import { InputMessage } from "@/components/register/InputMessage";
+import { InputMessage } from "@/components/commons/InputMessage";
 import { oAuthLogIn, oAuthRegister } from "@/utils/supabase/authAPI";
 import KakaoLoginIcon from "@/assets/images/join_kakaotalk.svg";
 import GoogleLoginIcon from "@/assets/images/join_google.svg";
@@ -118,7 +118,7 @@ const Register = () => {
 
     if (inputPassword.length === 0) {
       isPassed.current = { ...isPassed.current, password: false };
-      setPasswordMessage("비밀번호을 입력해주세요.");
+      setPasswordMessage("비밀번호를 입력해주세요.");
       return;
     }
 
@@ -298,6 +298,12 @@ const Register = () => {
                 </button>
               </li>
             </ul>
+          </div>
+          <div className={S.logInLink}>
+            <p>이미 계정이 있으신가요?</p>
+            <Link replace={true} href="/login">
+              로그인 하기
+            </Link>
           </div>
         </form>
       </main>

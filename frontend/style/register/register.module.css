@@ -118,16 +118,19 @@
   justify-content: center;
 }
 
-.error {
-  color: var(--variation-error);
+.logInLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #747474;
   font-size: var(--font-size-small);
-  margin: 8px 0 0 5px;
 }
 
-.success {
+.logInLink a {
   color: var(--primary-color);
-  font-size: var(--font-size-small);
-  margin: 8px 0 0 5px;
+  font-weight: var(--font-bold);
+  text-decoration: underline;
 }
 
 /*--------------- Responsive --------------*/

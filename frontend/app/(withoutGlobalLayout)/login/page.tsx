@@ -10,13 +10,40 @@ import KakaoLoginIcon from "@/assets/images/join_kakaotalk.svg";
 import GoogleLoginIcon from "@/assets/images/join_google.svg";
 import Logo from "@/assets/images/logo.svg";
 import ErrorMessage from "@/components/logIn/ErrorMessage";
+import { InputMessage } from "@/components/commons/InputMessage";
 import { useCookies } from "react-cookie";
+
+const validateEmail = (email: string) => {
+  if (email.trim().length === 0) {
+    return "이메일을 입력해주세요.";
+  }
+
+  let emailPattern = new RegExp(/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/);
+
+  if (!emailPattern.test(email)) {
+    return "이메일 형식이 아닙니다.";
+  }
+
+  return "";
+};
+
+// 로그인은 가입 시점의 규칙을 알 수 없으므로 길이는 검사하지 않는다.
+const validatePassword = (password: string) => {
+  if (password.length === 0) {
+    return "비밀번호를 입력해주세요.";
+  }
+
+  return "";
+};
 
 const LogIn = () => {
   const [email, setEmail] = useState("");
+  const [emailMessage, setEmailMessage] = useState("");
   const [isEmailSaved, setIsEmailSaved] = useState(false);
   const [password, setPassword] = useState("");
+  const [passwordMessage, setPasswordMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState<string[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [cookies, setCookie, removeCookie] = useCookies(["savedEmail"]);
   const router = useRouter();
 
@@ -40,11 +67,46 @@ const LogIn = () => {
   const logInHandler = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    if (isSubmitting) {
+      return;
+    }
+
+    const nextEmailMessage = validateEmail(email);
+    const nextPasswordMessage = validatePassword(password);
+
+    setEmailMessage(nextEmailMessage);
+    setPasswordMessage(nextPasswordMessage);
+
+    if (nextEmailMessage || nextPasswordMessage) {
+      return;
+    }
+
+    setErrorMessage([]);
+    setIsSubmitting(true);
+
     try {
       await emailLogIn(email, password);
       router.replace("/main");
     } catch (error) {
       setErrorMessage(["이메일 또는 비밀번호를 잘못 입력했습니다.", "입력하신 내용을 다시 확인해주세요."]);
+      setIsSubmitting(false);
+    }
+  };
+
+  // 입력 중에는 이미 떠 있는 에러만 갱신하고, 검사는 blur·전송 시점에 한다.
+  const emailChangeHandler = (inputEmail: string) => {
+    setEmail(inputEmail);
+
+    if (emailMessage) {
+      setEmailMessage(validateEmail(inputEmail));
+    }
+  };
+
+  const passwordChangeHandler = (inputPassword: string) => {
+    setPassword(inputPassword);
+
+    if (passwordMessage) {
+      setPasswordMessage(validatePassword(inputPassword));
     }
   };
 
@@ -89,25 +151,28 @@ const LogIn = () => {
         </Link>
       </header>
       <main className={S.mainWrapper}>
-        <form onSubmit={logInHandler}>
+        <form onSubmit={logInHandler} noValidate>
           <h2>로그인</h2>
           <div className={S.userform}>
-            <p>
+            <div className={S.userField}>
               <label htmlFor="email">이메일</label>
               <input
+                type="email"
                 id="email"
                 placeholder="이메일을 입력해주세요."
                 autoComplete="off"
                 autoFocus
                 value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                }}
+                onChange={(e) => emailChangeHandler(e.target.value)}
                 onFocus={emailFocusHandler}
+                onBlur={() => setEmailMessage(validateEmail(email))}
+                aria-invalid={emailMessage.length > 0}
+                aria-describedby="email-message"
                 required
               />
-            </p>
-            <p>
+              <InputMessage id="email-message" text={emailMessage} />
+            </div>
+            <div className={S.userField}>
               <label htmlFor="password">비밀번호</label>
               <input
                 type="password"
@@ -115,13 +180,15 @@ const LogIn = () => {
                 placeholder="비밀번호를 입력해주세요."
                 autoComplete="off"
                 value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                }}
+                onChange={(e) => passwordChangeHandler(e.target.value)}
                 onFocus={passwordFocusHandler}
+                onBlur={() => setPasswordMessage(validatePassword(password))}
+                aria-invalid={passwordMessage.length > 0}
+                aria-describedby="password-message"
                 required
               />
-            </p>
+              <InputMessage id="password-message" text={passwordMessage} />
+            </div>
             <div className={S.emailSave}>
               <p>
                 <input type="checkbox" id="saveEmail" onChange={(e) => saveEmailHandler(e)} checked={isEmailSaved} />
@@ -148,7 +215,7 @@ const LogIn = () => {
               </li>
             </ul>
           </div>
-          <button type="submit" className={S.loginButton}>
+          <button type="submit" className={S.loginButton} disabled={isSubmitting}>
             로그인
           </button>
         </form>
