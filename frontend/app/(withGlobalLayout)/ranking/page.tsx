@@ -1,4 +1,5 @@
-export const revalidate = 1800;
+// 랭킹은 항상 최신 점수를 보여야 하므로 매 요청마다 렌더링
+export const dynamic = "force-dynamic";
 
 import RankingEmptyImage from "@/assets/images/ranking_empty.svg";
 import S from "@/style/ranking/ranking.module.css";
