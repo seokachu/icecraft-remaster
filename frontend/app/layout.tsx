@@ -4,13 +4,10 @@ import "react-toastify/dist/ReactToastify.css";
 import { pretendard } from "@/public/fonts/fonts";
 import type { Metadata } from "next";
 import GoogleTracker from "@/utils/GoogleTracker";
-
-const defaultUrl = process.env.NEXT_PUBLIC_VERCEL_URL
-  ? process.env.NEXT_PUBLIC_VERCEL_URL
-  : process.env.NEXT_PUBLIC_DEV_CLIENT_URL;
+import { baseUrl } from "@/utils/baseUrl";
 
 export const metadata: Metadata = {
-  metadataBase: new URL(defaultUrl!),
+  metadataBase: new URL(baseUrl),
   title: "IceCraft",
   description: "into stunning space! 놀라운 공간 속으로!",
   keywords: ["IceCraft", "icecraft", "아이스 크레프트"],

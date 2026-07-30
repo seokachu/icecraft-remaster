@@ -1,10 +1,8 @@
 import { Provider } from "@supabase/supabase-js";
 import { createClient } from "@/utils/supabase/client";
+import { baseUrl } from "@/utils/baseUrl";
 
 const supabase = createClient();
-const defaultUrl = process.env.NEXT_PUBLIC_VERCEL_URL
-  ? process.env.NEXT_PUBLIC_VERCEL_URL
-  : process.env.NEXT_PUBLIC_DEV_CLIENT_URL;
 export const checkLogInSession = async () => {
   const { data, error } = await supabase.auth.getSession();
 
@@ -70,7 +68,7 @@ export const oAuthLogIn = async (provider: Provider) => {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider,
     options: {
-      redirectTo: `${defaultUrl}/sns-login`
+      redirectTo: `${baseUrl}/sns-login`
     }
   });
 

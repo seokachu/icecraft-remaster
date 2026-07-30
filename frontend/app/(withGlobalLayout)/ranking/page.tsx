@@ -9,6 +9,7 @@ import Pagination from "@/components/ranking/Pagination";
 import MyLanking from "@/components/ranking/MyRanking";
 import { getUsersRanking } from "@/utils/supabase/rankingAPI";
 import { Ranking } from "@/types";
+import { baseUrl } from "@/utils/baseUrl";
 import type { Metadata } from "next";
 
 const Rankingpage = async () => {
@@ -63,12 +64,8 @@ const Rankingpage = async () => {
   );
 };
 
-const defaultUrl = process.env.NEXT_PUBLIC_VERCEL_URL
-  ? process.env.NEXT_PUBLIC_VERCEL_URL
-  : process.env.NEXT_PUBLIC_DEV_CLIENT_URL;
-
 export const metadata: Metadata = {
-  metadataBase: new URL(defaultUrl!),
+  metadataBase: new URL(baseUrl),
   title: "IceCraft",
   description: "into stunning space! 놀라운 공간 속으로! 마피아게임 랭킹페이지 입니다.",
   keywords: ["IceCraft", "icecraft", "아이스 크레프트", "마피아 랭킹", "마피아 게임"],
