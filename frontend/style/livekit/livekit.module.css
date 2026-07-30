@@ -188,6 +188,7 @@
   justify-content: center;
   gap: 8px;
   font-size: var(--font-size-content);
+  color: var(--white);
   background-color: var(--text-black);
   border-radius: var(--border-radius);
   border: 1px solid rgba(255, 255, 255, 0.2);
