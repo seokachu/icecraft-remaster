@@ -78,6 +78,7 @@
 }
 
 .emailSave input {
+  accent-color: var(--primary-color);
   transform: translateY(2px);
   width: 15px;
   height: 15px;
